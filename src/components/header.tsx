@@ -11,7 +11,7 @@ export function Header() {
         { label: "캠페인", path: "/" },
         { label: "내 캠페인", path: "/campaignMy" },
         { label: "포인트", path: "/point" },
-        { label: "마이페이지", path: "/mypage" },
+        { label: "마이페이지", path: "/mypage2" },
         { label: "고객센터", path: "/customerCenter" },
     ];
 
@@ -20,7 +20,7 @@ export function Header() {
             <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
                 {/* Top Row: 로고 + 로그인 (모바일 메뉴 버튼) */}
                 <div className="flex items-center justify-between w-full sm:w-auto">
-                    <Link href="/public" className="text-2xl font-bold text-gray-800">
+                    <Link href="/" className="text-2xl font-bold text-gray-800">
                         KReview
                     </Link>
                     <div className="sm:hidden">
