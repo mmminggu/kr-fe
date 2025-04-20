@@ -7,6 +7,13 @@ import NotificationPanel from "@/src/components/NotificationPanel";
 
 export function Header() {
     const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+    const NAV_ITEMS = [
+        { label: "캠페인", path: "/" },
+        { label: "내 캠페인", path: "/campaignMy" },
+        { label: "포인트", path: "/point" },
+        { label: "마이페이지", path: "/mypage" },
+        { label: "고객센터", path: "/customerCenter" },
+    ];
 
     return (
         <header className="border-b bg-white sticky top-0 z-50">
@@ -26,28 +33,25 @@ export function Header() {
                 {/* 중간: 네비게이션 메뉴 */}
                 <nav className="w-full">
                     <div className="flex flex-wrap justify-start gap-2 sm:hidden">
-                        {["캠페인", "내 캠페인", "포인트", "마이페이지", "고객센터"].map((label) => (
-                            <Button
-                                key={label}
-                                variant="ghost"
-                                className="text-sm font-medium px-3"
-                            >
-                                {label}
-                            </Button>
+                        {NAV_ITEMS.map(({ label, path }) => (
+                            <Link href={path} key={label}>
+                                <Button variant="ghost" className="text-sm font-medium px-3">
+                                    {label}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
 
                     <div className="hidden sm:flex justify-center gap-6">
-                        {["캠페인", "내 캠페인", "포인트", "마이페이지", "고객센터"].map((label) => (
-                            <Button
-                                key={label}
-                                variant="ghost"
-                                className="text-base font-medium"
-                            >
-                                {label}
-                            </Button>
+                        {NAV_ITEMS.map(({ label, path }) => (
+                            <Link href={path} key={label}>
+                                <Button variant="ghost" className="text-base font-medium">
+                                    {label}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
+
                 </nav>
 
                 {/* 우측: 알림 + 로그인/회원가입 */}
