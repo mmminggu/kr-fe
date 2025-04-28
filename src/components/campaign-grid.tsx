@@ -19,7 +19,8 @@ const campaigns = [
     isAvailable: true,
     image: "/img/img1.png?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/oliveyoung.jpg", href: "https://www.oliveyoung.co.kr/" }],
+    platformLogos: [{ src: "/logos/oliveyoung.jpg", href: "https://www.oliveyoung.co.kr/", alt:"올리브영" }],
+    deliveryType: ""
   },
   {
     id: 2,
@@ -35,7 +36,9 @@ const campaigns = [
     isAvailable: true,
     image: "/img/img2.png?height=200&width=300",
     shipType: "실배송",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "로켓와우",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },
   {
     id: 3,
@@ -51,7 +54,9 @@ const campaigns = [
     isAvailable: false,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "판매자배송",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },
   {
     id: 4,
@@ -67,7 +72,9 @@ const campaigns = [
     isAvailable: false,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com" }],
+    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com", alt:"네이버" }],
+    deliveryType: "",
+    reservation: [{check: false, time: ""}],
   },
   {
     id: 5,
@@ -83,7 +90,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "실배송",
-    platformLogos: [{ src: "/logos/oliveyoung.jpg", href: "https://www.oliveyoung.co.kr/" }],
+    platformLogos: [{ src: "/logos/oliveyoung.jpg", href: "https://www.oliveyoung.co.kr/", alt:"올리브영" }],
+    deliveryType: "",
+    reservation: [{check: false, time: ""}],
   },
   {
     id: 6,
@@ -99,7 +108,9 @@ const campaigns = [
     isAvailable: false,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "실배송",
-    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com" }],
+    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com", alt:"네이버" }],
+    deliveryType: "",
+    reservation: [{check: false, time: ""}],
   },
   {
     id: 7,
@@ -115,7 +126,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "실배송",
-    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com" }],
+    platformLogos: [{ src: "/logos/naver.png", href: "https://www.naver.com", alt:"네이버" }],
+    deliveryType: "",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },
   {
     id: 8,
@@ -131,7 +144,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },
   {
     id: 9,
@@ -147,7 +162,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "판매자배송",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },{
     id: 10,
     title: "체험단10",
@@ -162,7 +179,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "로켓와우",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },{
     id: 11,
     title: "체험단11",
@@ -177,7 +196,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "실배송",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },{
     id: 12,
     title: "체험단12",
@@ -192,7 +213,9 @@ const campaigns = [
     isAvailable: true,
     image: "/placeholder.svg?height=200&width=300",
     shipType: "빈박스",
-    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com" }],
+    platformLogos: [{ src: "/logos/coupang.png", href: "https://www.coupang.com", alt:"쿠팡" }],
+    deliveryType: "로켓와우",
+    reservation: [{check: true, time: "2025-04-25 09:00"}],
   },
 ]
 

@@ -4,9 +4,10 @@ import { useState } from "react"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
-import { Eye, Trash2, User, Mail, Phone, MapPin, CreditCard, Store } from "lucide-react"
+import { Eye, Trash2, User, Mail, Phone, MapPin, CreditCard, Store, Check } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
+import { Checkbox } from "@/src/components/ui/checkbox"; // 와우회원 체크용
 import {
   Dialog,
   DialogContent,
@@ -44,6 +45,7 @@ const mockStoreAccounts = [
     phone: "010-1111-2222",
     receiver: "홍길동",
     address: "서울시 강남구 테헤란로 123, 테헤란로 아파트 1단지 207동 1045호",
+    wowMember: true
   },
   {
     id: 2,
@@ -60,6 +62,7 @@ const mockStoreAccounts = [
     phone: "010-1111-2222",
     receiver: "김철수",
     address: "서울시 마포구 월드컵북로 456",
+    wowMember: false
   },
   {
     id: 3,
@@ -76,6 +79,24 @@ const mockStoreAccounts = [
     phone: "010-1111-2222",
     receiver: "이영희",
     address: "서울시 송파구",
+    wowMember: false
+  },
+  {
+    id: 4,
+    storeName: "쿠팡",
+    storeLogo: "/logos/coupang.png",
+    userId: "honggil",
+    userName: "김영희",
+    accountHolder: "김영희",
+    recipient: "김영희",
+    accountNumber: "1234567890",
+    bank: "국민은행",
+    contact: "010-1234-5678",
+    depositor: "김영희",
+    phone: "010-1111-2222",
+    receiver: "김영희",
+    address: "서울시 강남구 테헤란로 123, 테헤란로 아파트 1단지 207동 1045호",
+    wowMember: false
   },
 ]
 
@@ -109,6 +130,7 @@ export function StoreAccountsSection() {
             <CardTitle>스토어 계정관리</CardTitle>
             <CardDescription>스토어 계정 정보를 관리하실 수 있습니다.</CardDescription>
           </div>
+
           <Dialog>
             <DialogTrigger asChild>
               <Button className="whitespace-nowrap">
@@ -116,62 +138,101 @@ export function StoreAccountsSection() {
                 계정 추가
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-[600px] w-full">
               <DialogHeader>
                 <DialogTitle>스토어 계정 추가</DialogTitle>
                 <DialogDescription>새로운 스토어 계정 정보를 입력해주세요.</DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="storeName" className="text-right">
-                    스토어명
-                  </Label>
-                  <Input id="storeName" className="col-span-3" />
+
+              <div className="grid gap-4 py-4 text-sm">
+                {/* 1행: 스토어명 (Select 넓게) + 와우회원 체크 */}
+                <div className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
+                  <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
+                    <Store className="w-3 h-3" />
+                    <span>스토어명</span>
+                  </div>
+
+                  {/* Select + 체크박스 같은 줄에 */}
+                  <div className="flex gap-2 flex-1 items-center">
+                    <Select>
+                      <SelectTrigger className="w-[250px] text-sm h-8 px-2 border rounded">
+                        <SelectValue placeholder="스토어 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="쿠팡">쿠팡</SelectItem>
+                        <SelectItem value="네이버">네이버</SelectItem>
+                        <SelectItem value="올리브영">올리브영</SelectItem>
+                        <SelectItem value="11번가">11번가</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* 와우회원 체크박스 */}
+                    <div className="flex items-center gap-1 text-blue-500 text-xs ml-5">
+                      <Checkbox id="wowMember" />
+                      <Label htmlFor="wowMember" className="flex items-center gap-1 ml-1">
+                        와우회원
+                      </Label>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="userId" className="text-right">
-                    아이디
-                  </Label>
-                  <Input id="userId" className="col-span-3" />
+
+                {/* 2행: 아이디 + 이름 */}
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: "add-userId", label: "아이디", icon: <User className="w-3 h-3" /> },
+                    { id: "add-userName", label: "이름", icon: <User className="w-3 h-3" /> },
+                  ].map(({ id, label, icon }) => (
+                      <div key={id} className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
+                        <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
+                          {icon}
+                          <span>{label}</span>
+                        </div>
+                        <Input id={id} className="flex-1 text-sm h-8 px-2" />
+                      </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    이름
-                  </Label>
-                  <Input id="name" className="col-span-3" />
+
+                {/* 3행: 수취인 + 연락처 */}
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: "add-recipient", label: "수취인", icon: <User className="w-3 h-3" /> },
+                    { id: "add-contact", label: "연락처", icon: <Phone className="w-3 h-3" /> },
+                  ].map(({ id, label, icon }) => (
+                      <div key={id} className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
+                        <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
+                          {icon}
+                          <span>{label}</span>
+                        </div>
+                        <Input id={id} className="flex-1 text-sm h-8 px-2" />
+                      </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="accountHolder" className="text-right">
-                    예금주
-                  </Label>
-                  <Input id="accountHolder" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="recipient" className="text-right">
-                    수취인
-                  </Label>
-                  <Input id="recipient" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="accountNumber" className="text-right">
-                    계좌번호
-                  </Label>
-                  <Input id="accountNumber" className="col-span-3" placeholder="은행명 포함" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="contact" className="text-right">
-                    연락처
-                  </Label>
-                  <Input id="contact" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="address" className="text-right">
-                    배송지
-                  </Label>
-                  <Input id="address" className="col-span-3" />
+
+                {/* 배송지 Select + 배송지 추가 버튼 (아이콘만) */}
+                <div className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
+                  <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
+                    <MapPin className="w-3 h-3" />
+                    <span>배송지</span>
+                  </div>
+                  <div className="flex gap-2 flex-1 items-center">
+                    <Select>
+                      <SelectTrigger className="w-full text-sm h-8 px-2 border rounded">
+                        <SelectValue placeholder="배송지 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="서울 강남구">서울 강남구</SelectItem>
+                        <SelectItem value="서울 마포구">서울 마포구</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* 배송지 추가 아이콘 버튼 (같은 줄) */}
+                    <Button variant="outline" size="icon" className="h-8 w-8 min-w-0 bg-blue-50 border-blue-200">
+                      <Plus className="w-4 h-4 text-blue-500" />
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="">
                 <Button type="submit">저장하기</Button>
               </DialogFooter>
             </DialogContent>
@@ -210,13 +271,27 @@ export function StoreAccountsSection() {
                   <div className="flex items-center gap-2">
                     <Image src={acc.storeLogo} alt={`${acc.storeName} 로고`} width={20} height={20} />
                     <span className="text-base font-bold text-gray-900">{acc.storeName}</span>
+
+                    {/* ✅ 와우회원 표시 */}
+                    {acc.wowMember && (
+                        <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium">
+                          <Image src="/logos/coupang_rocket_wow.png" alt={`${acc.storeName} 로고`} width={50}
+                                 height={15}/>
+                        </div>
+                    )}
                   </div>
+
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleViewDetails(acc)}>
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">수정</span>
                     </Button>
-                    <Button variant="outline" size="sm" className="text-destructive" onClick={() => console.log("삭제", acc.id)}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-destructive"
+                        onClick={() => console.log("삭제", acc.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">삭제</span>
                     </Button>
@@ -229,11 +304,7 @@ export function StoreAccountsSection() {
                     <InfoBlock icon={<User className="w-3 h-3" />} label="이름" value={acc.userName} />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <InfoBlock icon={<User className="w-3 h-3" />} label="예금주" value={acc.depositor} />
                     <InfoBlock icon={<User className="w-3 h-3" />} label="수취인" value={acc.receiver} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <InfoBlock icon={<CreditCard className="w-3 h-3" />} label="계좌" value={`${acc.bank} ${acc.accountNumber}`} />
                     <InfoBlock icon={<Phone className="w-3 h-3" />} label="연락처" value={acc.phone} />
                   </div>
                   <InfoBlock icon={<MapPin className="w-3 h-3" />} label="배송지" value={acc.address} />
@@ -241,7 +312,6 @@ export function StoreAccountsSection() {
               </div>
           ))}
         </div>
-
 
         <Pagination>
           <PaginationContent>
@@ -297,22 +367,10 @@ export function StoreAccountsSection() {
                     value: selectedAccount.userName ?? selectedAccount.name,
                   },
                   {
-                    id: "edit-accountHolder",
-                    label: "예금주",
-                    icon: <User className="w-3 h-3" />,
-                    value: selectedAccount.accountHolder,
-                  },
-                  {
                     id: "edit-recipient",
                     label: "수취인",
                     icon: <User className="w-3 h-3" />,
                     value: selectedAccount.recipient,
-                  },
-                  {
-                    id: "edit-accountNumber",
-                    label: "계좌번호",
-                    icon: <CreditCard className="w-3 h-3" />,
-                    value: selectedAccount.accountNumber,
                   },
                   {
                     id: "edit-contact",

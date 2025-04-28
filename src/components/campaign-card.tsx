@@ -18,7 +18,9 @@ interface Campaign {
   isAvailable: boolean
   image: string
   shipType: string
-  platformLogos?: { src: string; href: string }[]
+  platformLogos?: { src: string; href: string; alt: string }[]
+  deliveryType: string
+  reservation?: { check: boolean; time: string}[]
 }
 
 interface CampaignCardProps {
@@ -93,41 +95,97 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             </Badge>
           </div>
         </div>
-        <div className="px-4 pt-3 flex justify-between items-center">
+        <div className="px-4 pt-2 flex justify-between items-center">
           {/* 좌측 뱃지 */}
           <div className="flex gap-2">
-            <Badge className="bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded-sm">
-              예약가능
-            </Badge>
+            {campaign.reservation?.[0]?.check && (
+              <Badge className="bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded-sm">
+                예약가능
+              </Badge>
+            )}
             <Badge className="bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded-sm">
               참여가능
             </Badge>
           </div>
 
+
           {/* 우측 로고 */}
-          <div className="flex gap-2">
-            {campaign.platformLogos?.slice(0, 2).map((logo, index) => (
-                <a
-                    key={index}
-                    href={logo.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block"
-                >
-                  <Image
-                      src={logo.src}
-                      alt="구매처"
-                      width={24}
-                      height={24}
-                      className="rounded bg-white border object-contain"
-                  />
-                </a>
-            ))}
+          <div className="flex gap-2 items-end">
+            {campaign.platformLogos?.slice(0, 2).map((logo, index) => {
+              const isCoupang = logo.alt === "쿠팡";
+              const isRocketWow = campaign.deliveryType === "로켓와우";
+              const isRocketSeller = campaign.deliveryType === "판매자배송";
+              const isCommon = campaign.deliveryType === "";
+
+              return (
+                  <div key={index} className="flex flex-col items-center">
+                    <a
+                        href={logo.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block"
+                    >
+                      <img
+                          src={logo.src}
+                          alt={logo.alt}
+                          width={23}
+                          height={23}
+                          className="rounded-full bg-white object-contain"
+                      />
+                    </a>
+
+                    {/* 쿠팡일 경우 배송 형태 아래 표시 */}
+                    {isCoupang ? (
+                        <>
+                          {isRocketWow && (
+                              <img
+                                  src="/logos/coupang_rocket_wow.png"
+                                  alt="로켓와우 배송"
+                                  width={48}
+                                  height={14}
+                                  className="mt-1 object-contain"
+                              />
+                          )}
+                          {isRocketSeller && (
+                              <img
+                                  src="/logos/coupang_seller_rocket.png"
+                                  alt="판매자 로켓배송"
+                                  width={50}
+                                  height={18}
+                                  className="mt-1 object-contain"
+                              />
+                          )}
+                          {isCommon && (
+                              <img
+                                  src="/logos/coupang_common.png"
+                                  alt="일반배송"
+                                  width={40}
+                                  height={12}
+                                  className="mt-1 object-contain"
+                              />
+                          )}
+                        </>
+                    ) : (
+                        // 쿠팡이 아닌 경우도 정렬 유지를 위한 placeholder
+                        <div style={{ height: 12 }} />
+                    )}
+                  </div>
+              );
+            })}
           </div>
+
         </div>
 
-        <CardContent className="p-4 flex-grow flex flex-col">
-          <h3 className="text-lg font-semibold line-clamp-2 mb-3">{campaign.title}</h3>
+
+        <CardContent className="px-4 flex-grow flex flex-col">
+          {campaign.reservation?.[0]?.check ? (
+              <p className="text-xs font-semibold line-clamp-2 text-gray-500">
+                09:00에 참여시작
+              </p>
+          ) : (
+              <p className="text-xs font-semibold invisible"> </p> // ← 여백만 확보
+          )}
+          <h3 className="text-lg font-semibold line-clamp-2 mb-1">{campaign.title}</h3>
           <div className="space-y-2 text-sm mt-auto text-gray-700">
             <div className="flex justify-between">
               <span className="text-gray-500">제품 가격</span>
@@ -168,7 +226,6 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
                 <span className="font-semibold text-red-500">{campaign.rejoinDays}</span>
                 <span className="text-gray-500">일 후</span>
               </span>
-
             </div>
           </div>
         </CardContent>

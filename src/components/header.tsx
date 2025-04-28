@@ -11,7 +11,7 @@ export function Header() {
         { label: "캠페인", path: "/" },
         { label: "내 캠페인", path: "/campaignMy" },
         { label: "포인트", path: "/point" },
-        { label: "마이페이지", path: "/mypage" },
+        { label: "마이페이지", path: "/mypage2" },
         { label: "고객센터", path: "/customerCenter" },
     ];
 

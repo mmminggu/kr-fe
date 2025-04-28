@@ -15,7 +15,7 @@ import {
 type PointRecord = {
     id: number
     campaign: string
-    type: "적립" | "출금" | "차감"
+    type: "적립" | "차감"
     point: number
     date: string
 }
@@ -30,16 +30,17 @@ const iconMap = {
 const sampleData: PointRecord[] = [
     { id: 1, campaign: "프리미엄 커피 리뷰", type: "적립", point: 1500, date: "2025-04-12" },
     { id: 2, campaign: "헤어케어 제품", type: "차감", point: -3000, date: "2025-04-11" },
-    { id: 3, campaign: "스킨케어 후기", type: "출금", point: -10000, date: "2025-04-10" },
-    { id: 4, campaign: "리뷰 미작성 패널티", type: "차감", point: -2000, date: "2025-04-09" },
-    { id: 5, campaign: "건강기능식품 리뷰", type: "적립", point: 5000, date: "2025-04-08" },
+    { id: 3, campaign: "리뷰 미작성 패널티", type: "차감", point: -2000, date: "2025-04-09" },
+    { id: 4, campaign: "건강기능식품 리뷰", type: "적립", point: 5000, date: "2025-04-08" },
+    { id: 5, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 6, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 7, campaign: "캠페인 AAAA", type: "출금", point: -2000, date: "2025-04-06" },
+    { id: 7, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 8, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 9, campaign: "캠페인 A", type: "출금", point: -2000, date: "2025-04-06" },
-    { id: 10, campaign: "캠페인 A", type: "출금", point: -2000, date: "2025-04-06" },
+    { id: 9, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
+    { id: 10, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 11, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 12, campaign: "캠페인 A", type: "출금", point: -2000, date: "2025-04-06" },
+    { id: 12, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
+    { id: 13, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
 ]
 
 const dateRanges = {
@@ -143,7 +144,6 @@ export default function PointPage() {
                             <SelectItem value="전체">전체</SelectItem>
                             <SelectItem value="적립">적립</SelectItem>
                             <SelectItem value="차감">차감</SelectItem>
-                            <SelectItem value="출금">출금</SelectItem>
                         </SelectContent>
                     </Select>
 

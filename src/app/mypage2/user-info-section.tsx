@@ -6,7 +6,7 @@ import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Alert, AlertDescription } from "@/src/components/ui/alert"
-import {AlertCircle, Lock, Mail, Phone, ShieldCheck, User} from "lucide-react"
+import {AlertCircle, Lock, Mail, Phone, ShieldCheck, User, Landmark, CreditCard, UserCheck} from "lucide-react"
 
 export function UserInfoSection() {
   const [showVerification, setShowVerification] = useState(false)
@@ -33,6 +33,35 @@ export function UserInfoSection() {
               <User className="w-4 h-4" /> 이름
             </Label>
             <Input placeholder="이름 입력" value="홍길동" />
+          </div>
+
+          {/* ✅ 계좌번호 (라벨 + 은행선택 + 계좌번호 입력 한 줄) */}
+          <div className="flex items-center gap-3">
+            <Label className="w-36 text-gray-700 flex items-center gap-1">
+              <CreditCard className="w-4 h-4" /> 계좌번호
+            </Label>
+            <div className="flex gap-2 w-full">
+              {/* 은행 선택 */}
+              <select className="w-1/3 border rounded px-3 py-2 text-sm">
+                <option value="">은행 선택</option>
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="카카오뱅크">카카오뱅크</option>
+                <option value="농협은행">농협은행</option>
+              </select>
+
+              {/* 계좌번호 입력 */}
+              <Input className="w-2/3" placeholder="계좌번호 입력" />
+            </div>
+          </div>
+
+          {/* ✅ 예금주 입력 */}
+          <div className="flex items-center gap-3">
+            <Label className="w-36 text-gray-700 flex items-center gap-1">
+              <UserCheck className="w-4 h-4" /> 예금주
+            </Label>
+            <Input placeholder="예금주 입력" />
           </div>
 
           {/* 비밀번호 */}
