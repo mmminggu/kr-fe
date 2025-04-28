@@ -20,7 +20,7 @@ export function Header() {
             <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
                 {/* Top Row: 로고 + 로그인 (모바일 메뉴 버튼) */}
                 <div className="flex items-center justify-between w-full sm:w-auto">
-                    <Link href="/public" className="text-2xl font-bold text-gray-800">
+                    <Link href="/" className="text-2xl font-bold text-gray-800">
                         KReview
                     </Link>
                     <div className="sm:hidden">
