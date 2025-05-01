@@ -6,9 +6,14 @@ import { useState } from "react"
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
 import {SearchIcon, UploadCloud, AlertCircle, Pencil, Info} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import {Input} from "@/src/components/ui/input";
 
-type CampaignStatus = "전체" | "구매증빙" | "리뷰증빙" | "완료" | "취소" | "참여" | "구매증빙 수정"| "리뷰증빙 수정"
+type CampaignStatus = "전체" | "구매증빙" | "리뷰증빙" | "완료" | "취소" | "참여" | "구매증빙 수정"| "리뷰증빙 수정";
+type DashboardCategory = "전체" | "진행중" | "마감됨";
+
 const isCorrectionRequired = true;
 const correctionImage = "ex_coupang.png"; // ← 없으면 null
 // const correctionImage = ""; // ← 없으면 null
@@ -151,24 +156,92 @@ export default function MyCampaignPage() {
     const itemsPerPage = 8
     const [selectedCampaign, setSelectedCampaign] = useState<MyCampaign | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const statusCounts: Record<CampaignStatus, number> = {
-        참여: 2,
-        구매증빙: 3,
-        리뷰증빙: 4,
-        완료: 1,
-        취소: 1,
+    const [statusFilter, setStatusFilter] = useState<CampaignStatus | "전체">("전체")
+    const router = useRouter();
+// 상태 변수 추가
+    const [dashboardCategory, setDashboardCategory] = useState<DashboardCategory>("전체");
+
+// 대시보드 카테고리에 따른 상태 그룹 정의
+    const statusGroups: Record<DashboardCategory, (CampaignStatus | "전체")[]> = {
+        "전체": ["전체", "참여", "구매증빙", "구매증빙 수정", "리뷰증빙", "리뷰증빙 수정", "완료", "취소"],
+        "진행중": ["전체", "참여", "구매증빙", "구매증빙 수정", "리뷰증빙", "리뷰증빙 수정"],
+        "마감됨": ["전체", "완료", "취소"]
+    };
+
+// 캠페인 상태를 대시보드 카테고리로 매핑
+    const campaignStatusToDashboardCategory: Record<CampaignStatus, DashboardCategory> = {
+        "참여": "진행중",
+        "구매증빙": "진행중",
+        "구매증빙 수정": "진행중",
+        "리뷰증빙": "진행중",
+        "리뷰증빙 수정": "진행중",
+        "완료": "마감됨",
+        "취소": "마감됨"
+    };
+
+// 대시보드 카테고리별 캠페인 수 계산
+    const dashboardCounts: Record<DashboardCategory, number> = {
+        "전체": campaigns.length,
+        "진행중": campaigns.filter(c =>
+            ["참여", "구매증빙", "구매증빙 수정", "리뷰증빙", "리뷰증빙 수정"].includes(c.status)
+        ).length,
+        "마감됨": campaigns.filter(c =>
+            ["완료", "취소"].includes(c.status)
+        ).length
+    };
+
+// 대시보드 카테고리 변경 핸들러
+    const handleDashboardCategoryChange = (category: DashboardCategory) => {
+        setDashboardCategory(category);
+        setStatusFilter("전체");
+        setCurrentPage(1);
+    };
+
+// 필터링 함수 업데이트
+    const filteredCampaigns = campaigns.filter((c) => {
+        const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesDashboard = dashboardCategory === "전체" || campaignStatusToDashboardCategory[c.status] === dashboardCategory;
+        const matchesStatus = statusFilter === "전체" || c.status === statusFilter;
+
+        return matchesSearch && matchesDashboard && matchesStatus;
+    });
+
+    // 상태별 캠페인 카운트 계산
+    const statusCounts: Record<CampaignStatus | "전체", number> = {
+        전체: campaigns.length,
+        참여: 0,
+        구매증빙: 0,
+        리뷰증빙: 0,
+        완료: 0,
+        취소: 0,
+        "구매증빙 수정": 0,
+        "리뷰증빙 수정": 0
     }
 
-    campaigns.forEach((c) => statusCounts[c.status]++)
+    // 상태별 카운트 계산
+    campaigns.forEach((c) => {
+        // 수정된 상태도 각 카테고리에 포함시킴
+        if (c.status === "구매증빙 수정") {
+            statusCounts["구매증빙"]++
+        } else if (c.status === "리뷰증빙 수정") {
+            statusCounts["리뷰증빙"]++
+        } else {
+            statusCounts[c.status]++
+        }
+    })
 
-    const filteredCampaigns = campaigns.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-
+    // 페이지네이션 적용
     const paginatedCampaigns = filteredCampaigns.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     )
+
+    // 상태 필터 변경 핸들러
+    const handleStatusFilterChange = (newStatus: CampaignStatus | "전체") => {
+        setStatusFilter(newStatus);
+        setCurrentPage(1); // 필터 변경 시 첫 페이지로 이동
+    }
+
     const handleOpenModal = (campaign: MyCampaign) => {
         setSelectedCampaign(campaign);
         setIsModalOpen(true);
@@ -184,11 +257,18 @@ export default function MyCampaignPage() {
             {/* 제목 */}
             <h2 className="text-2xl font-bold text-gray-900">내 캠페인</h2>
             {/* 대시보드 */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                {(["참여", "구매증빙", "리뷰증빙", "완료", "취소"] as CampaignStatus[]).map((label) => (
-                    <StatusCard key={label} label={label} count={statusCounts[label]} />
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+                {["전체", "진행중", "마감됨"].map((category) => (
+                    <StatusCard
+                        key={category}
+                        label={category}
+                        count={dashboardCounts[category]}
+                        isActive={dashboardCategory === category}
+                        onClick={() => handleDashboardCategoryChange(category)}
+                    />
                 ))}
             </div>
+
             <div className="relative w-full">
                 <SearchIcon
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -206,114 +286,149 @@ export default function MyCampaignPage() {
                 />
             </div>
 
+            {/* 상세 필터 버튼 */}
+            <div className="flex flex-wrap gap-2 mt-3">
+                <span className="text-sm text-gray-500 self-center">상세 필터:</span>
+                {statusGroups[dashboardCategory].map((status) => (
+                    <button
+                        key={status}
+                        onClick={() => {
+                            setStatusFilter(status);
+                            setCurrentPage(1);
+                        }}
+                        className={`px-3 py-1 rounded-full text-xs transition-colors ${
+                            statusFilter === status
+                                ? 'bg-indigo-100 text-indigo-700 border border-indigo-300'
+                                : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                        }`}
+                    >
+                        {status === "전체" ? "모두 보기" : status}
+                    </button>
+                ))}
+            </div>
+
             {/* 캠페인 카드 리스트 */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
                 {paginatedCampaigns.map((campaign) => (
-                    <div key={campaign.id} className="border rounded-xl shadow-sm bg-white overflow-hidden">
-                        <Image src={campaign.image} alt={campaign.title} width={400} height={250} className="w-full h-40 object-cover" />
-                        <div className="p-4 space-y-3">
-                            <div className="flex justify-between items-start">
-                                <h3 className="text-sm sm:text-base font-semibold leading-snug">{campaign.title}</h3>
-                                {/*{renderBadgeByStatus(campaign.status)}*/}
-                                <Badge className="text-xs sm:text-xs">{campaign.status}</Badge>
-                            </div>
-
-                            <div className="text-xs sm:text-sm text-gray-700 space-y-1">
-                                <div className="text-xs sm:text-sm text-gray-700 space-y-1 sm:space-y-1">
-                                    {/* 제품비 & 배송비 한 줄 */}
-                                    <div className="flex justify-between gap-1 sm:gap-4">
-                                        <div className="flex-1 flex justify-between">
-                                            <span className="text-gray-500">제품비</span>
-                                            <span className="font-medium text-gray-800">{campaign.price.toLocaleString()}원</span>
-                                        </div>
-                                        <span className="text-gray-400">|</span>
-                                        <div className="flex-1 flex justify-between">
-                                            <span className="text-gray-500">배송비</span>
-                                            <span className="font-medium text-gray-800">{campaign.shipping.toLocaleString()}원</span>
-                                        </div>
-                                    </div>
-
-                                    {/* 입금자, 담당자 */}
-                                    <div className="flex justify-between gap-4">
-                                        <div className="flex-1 flex justify-between">
-                                            <span className="text-gray-500">입금자</span>
-                                            <span className="font-medium text-gray-800 ">리뷰리뷰</span>
-                                        </div>
-                                        <span className="text-gray-400">|</span>
-                                        <div className="flex-1 flex justify-between">
-                                            <span className="text-gray-500">담당자</span>
-                                            <span className="font-medium text-gray-800">초롱이</span>
-                                        </div>
-                                    </div>
-
-                                    {/* 포인트, 배송형태 */}
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">배송형태</span>
-                                        <span className="font-medium text-gray-800">{campaign.deliveryType}</span>
-                                    </div>
-
-                                    {/* 계정, 기한 */}
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">참여계정</span>
-                                        <span className="font-medium text-gray-800">test@naver.com</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">지급 포인트</span>
-                                        <span className="font-semibold text-indigo-600">{campaign.point.toLocaleString()}P</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">증빙 기한</span>
-                                        <span className="text-red-600 font-semibold">{getDDayLabel(campaign.proofDeadline)}</span>
-                                    </div>
+                    <div
+                        key={campaign.id}
+                        onClick={() => router.push(`/campaignDetail`)} // 추후 /campaigns/${campaign.id} 로 변경 가능
+                        className={"cursor-pointer"}
+                    >
+                        <div key={campaign.id} className="border rounded-xl hover:shadow-md transition-shadow shadow-sm bg-white overflow-hidden">
+                            <Image src={campaign.image} alt={campaign.title} width={400} height={250} className="w-full h-40 object-cover" />
+                            <div className="p-4 space-y-3">
+                                <div className="flex justify-between items-start">
+                                    <h3 className="text-sm sm:text-base font-semibold leading-snug">{campaign.title}</h3>
+                                    <Badge className="text-xs sm:text-xs">{campaign.status}</Badge>
                                 </div>
 
-                            </div>
+                                <div className="text-xs sm:text-sm text-gray-700 space-y-1">
+                                    <div className="text-xs sm:text-sm text-gray-700 space-y-1 sm:space-y-1">
+                                        {/* 제품비 & 배송비 한 줄 */}
+                                        <div className="flex justify-between gap-1 sm:gap-4">
+                                            <div className="flex-1 flex justify-between">
+                                                <span className="text-gray-500">제품비</span>
+                                                <span className="font-medium text-gray-800">{campaign.price.toLocaleString()}원</span>
+                                            </div>
+                                            <span className="text-gray-400">|</span>
+                                            <div className="flex-1 flex justify-between">
+                                                <span className="text-gray-500">배송비</span>
+                                                <span className="font-medium text-gray-800">{campaign.shipping.toLocaleString()}원</span>
+                                            </div>
+                                        </div>
 
-                            <div className="flex flex-col gap-2 ">
-                                {/* 구매/리뷰 증빙 버튼 한 줄 */}
-                                <div className="h-3 text-xs">
-                                    {campaign.status === "구매증빙 수정" && (
-                                        <div className="text-red-600 font-semibold flex items-center gap-2 animate-blink duration-[90000ms]">
-                                            <AlertCircle className="w-3 h-3" />
-                                            구매증빙 수정 요청
+                                        {/* 입금자, 담당자 */}
+                                        <div className="flex justify-between gap-4">
+                                            <div className="flex-1 flex justify-between">
+                                                <span className="text-gray-500">입금자</span>
+                                                <span className="font-medium text-gray-800 ">리뷰리뷰</span>
+                                            </div>
+                                            <span className="text-gray-400">|</span>
+                                            <div className="flex-1 flex justify-between">
+                                                <span className="text-gray-500">담당자</span>
+                                                <span className="font-medium text-gray-800">초롱이</span>
+                                            </div>
                                         </div>
-                                    )}
-                                    {campaign.status === "리뷰증빙 수정" && (
-                                        <div className="text-red-600 font-semibold flex items-center gap-2 animate-blink duration-[90000ms]">
-                                            <AlertCircle className="w-3 h-3" />
-                                            리뷰증빙 수정 요청
+
+                                        {/* 포인트, 배송형태 */}
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">배송형태</span>
+                                            <span className="font-medium text-gray-800">{campaign.deliveryType}</span>
                                         </div>
-                                    )}
-                                    {campaign.status !== "구매증빙 수정" && campaign.status !== "리뷰증빙 수정" && (
-                                        <div className="invisible">-</div>
-                                    )}
+
+                                        {/* 계정, 기한 */}
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">참여계정</span>
+                                            <span className="font-medium text-gray-800">test@naver.com</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">지급 포인트</span>
+                                            <span className="font-semibold text-indigo-600">{campaign.point.toLocaleString()}P</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">증빙 기한</span>
+                                            <span className="text-red-600 font-semibold">{getDDayLabel(campaign.proofDeadline)}</span>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-
-                                {renderButtonsByStatus(campaign)}
-
-                                {/* 가이드 / 문의 버튼 한 줄 */}
-                                <div className="flex gap-2">
-                                    <Button variant="outline" size="sm" className="w-full text-xs">📘 가이드</Button>
-                                    <Button variant="outline" size="sm" className="w-full text-xs">💬 문의</Button>
+                                <div className="flex flex-col gap-2 ">
+                                    {/* 구매/리뷰 증빙 버튼 한 줄 */}
+                                    <div className="h-3 text-xs">
+                                        {campaign.status === "구매증빙 수정" && (
+                                            <div className="text-red-600 font-semibold flex items-center gap-2 animate-blink duration-[90000ms]">
+                                                <AlertCircle className="w-3 h-3" />
+                                                구매증빙 수정 요청
+                                            </div>
+                                        )}
+                                        {campaign.status === "리뷰증빙 수정" && (
+                                            <div className="text-red-600 font-semibold flex items-center gap-2 animate-blink duration-[90000ms]">
+                                                <AlertCircle className="w-3 h-3" />
+                                                리뷰증빙 수정 요청
+                                            </div>
+                                        )}
+                                        {campaign.status !== "구매증빙 수정" && campaign.status !== "리뷰증빙 수정" && (
+                                            <div className="invisible">-</div>
+                                        )}
+                                    </div>
+                                    {renderButtonsByStatus(campaign)}
+                                    {/* 가이드 / 문의 버튼 한 줄 */}
+                                    <div className="flex gap-2">
+                                        <Button variant="outline" size="sm" className="w-full text-xs" onClick={(e) => e.stopPropagation()}>📘 가이드</Button>
+                                        <Button variant="outline" size="sm" className="w-full text-xs" onClick={(e) => e.stopPropagation()}>💬 문의</Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="flex justify-center mt-6 gap-2">
-                {Array.from({ length: Math.ceil(filteredCampaigns.length / itemsPerPage) }, (_, i) => (
-                    <Button
-                        key={i + 1}
-                        size="sm"
-                        variant={currentPage === i + 1 ? "default" : "outline"}
-                        onClick={() => setCurrentPage(i + 1)}
-                    >
-                        {i + 1}
-                    </Button>
-                ))}
-            </div>
+
+            {/* 페이지가 없을 경우 메시지 표시 */}
+            {filteredCampaigns.length === 0 && (
+                <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">해당 조건의 캠페인이 없습니다.</p>
+                </div>
+            )}
+
+            {/* 페이지네이션 */}
+            {filteredCampaigns.length > 0 && (
+                <div className="flex justify-center mt-6 gap-2">
+                    {Array.from({ length: Math.ceil(filteredCampaigns.length / itemsPerPage) }, (_, i) => (
+                        <Button
+                            key={i + 1}
+                            size="sm"
+                            variant={currentPage === i + 1 ? "default" : "outline"}
+                            onClick={() => setCurrentPage(i + 1)}
+                        >
+                            {i + 1}
+                        </Button>
+                    ))}
+                </div>
+            )}
+
             {isModalOpen && selectedCampaign && (
                 <ReceiptUploadModal
                     campaign={selectedCampaign}
@@ -328,11 +443,11 @@ export default function MyCampaignPage() {
             case "취소":
                 return (
                     <div className="flex gap-2">
-                        <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
+                        <button disabled  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             구매증빙
                         </button>
-                        <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
+                        <button disabled  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             리뷰증빙
                         </button>
@@ -345,7 +460,8 @@ export default function MyCampaignPage() {
                     <div className="flex gap-2">
                         <button
                             className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm"
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.stopPropagation()
                                 setSelectedCampaign(campaign);
                                 setIsModalOpen(true);
                             }}
@@ -353,7 +469,7 @@ export default function MyCampaignPage() {
                             <UploadCloud className="w-4 h-4" />
                             구매증빙
                         </button>
-                        <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
+                        <button disabled  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             리뷰증빙
                         </button>
@@ -364,13 +480,14 @@ export default function MyCampaignPage() {
             case "리뷰증빙 수정":
                 return (
                     <div className="flex gap-2">
-                        <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
+                        <button  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             구매증빙 확인
                         </button>
                         <button
                             className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md shadow-sm"
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.stopPropagation()
                                 setSelectedCampaign(campaign);
                                 setIsModalOpen(true);
                             }}
@@ -384,11 +501,11 @@ export default function MyCampaignPage() {
             case "완료":
                 return (
                     <div className="flex gap-2">
-                        <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
+                        <button  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             구매증빙 확인
                         </button>
-                        <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md shadow-sm">
+                        <button  onClick={(e) => e.stopPropagation()} className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md shadow-sm">
                             <UploadCloud className="w-4 h-4" />
                             리뷰증빙 확인
                         </button>
@@ -399,85 +516,31 @@ export default function MyCampaignPage() {
 
 }
 
-// 상태별 개수 카드
-function StatusCard({ label, count }: { label: string; count: number }) {
+// 상태별 개수 카드 (클릭 가능)
+function StatusCard({
+                        label,
+                        count,
+                        isActive,
+                        onClick
+                    }: {
+    label: string;
+    count: number;
+    isActive: boolean;
+    onClick: () => void;
+}) {
     return (
-        <div className="bg-white border rounded-lg shadow-sm px-4 py-5 text-center">
-            <p className="text-sm text-gray-500">{label}</p>
-            <p className="text-2xl font-bold text-gray-800">{count}</p>
-        </div>
-    )
+        <button
+            className={`flex items-center justify-between px-4 py-2 rounded-md border text-sm font-medium transition-colors duration-200
+        ${isActive
+                ? 'bg-indigo-50 text-indigo-700 border-indigo-400'
+                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'}`}
+            onClick={onClick}
+        >
+            <span>{label}</span>
+            <span className="ml-2 font-semibold">{count}</span>
+        </button>
+    );
 }
-/*
-
-// 상태별 버튼 구성
-function renderButtonsByStatus(status: CampaignStatus, campaign: string) {
-    switch (status) {
-        case "참여":
-        case "취소":
-            return (
-                <div className="flex gap-2">
-                    <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm" onClick={() => handleOpenModal(campaign)}>
-                        <UploadCloud className="w-4 h-4" />
-                        구매증빙
-                    </button>
-                    <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        리뷰증빙
-                    </button>
-                </div>
-            )
-
-        case "구매증빙":
-        case "구매증빙 수정":
-            return (
-
-                <div className="flex gap-2">
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm" onClick={() => {
-                        setSelectedCampaign(campaign)
-                        setIsModalOpen(true)
-                    }}>
-                        <UploadCloud className="w-4 h-4" />
-                        구매증빙
-                    </button>
-                    <button disabled className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        리뷰증빙
-                    </button>
-                </div>
-            )
-
-        case "리뷰증빙":
-        case "리뷰증빙 수정":
-            return (
-                <div className="flex gap-2">
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        구매증빙 확인
-                    </button>
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        리뷰증빙
-                    </button>
-                </div>
-            )
-
-        case "완료":
-            return (
-                <div className="flex gap-2">
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-green-50 text-green-700 border border-green-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        구매증빙 확인
-                    </button>
-                    <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md shadow-sm">
-                        <UploadCloud className="w-4 h-4" />
-                        리뷰증빙 확인
-                    </button>
-                </div>
-            )
-    }
-}
-*/
 
 
 // D-Day 계산 유틸
@@ -489,21 +552,6 @@ function getDDayLabel(deadline: string): string {
     if (diff < 0) return "마감"
     if (diff === 0) return "D-DAY"
     return `D-${diff}`
-}
-
-// 상태 배지
-function renderBadgeByStatus(status: CampaignStatus) {
-    switch (status) {
-        case "구매증빙 수정":
-        case "리뷰증빙 수정":
-            return (
-                <div className="animate-blink duration-[90000ms] inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-red-600 text-primary-foreground"><AlertCircle className="w-3 h-3 mr-1" /> {status}</div>
-            )
-        default:
-            return (
-                <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground">{status}</div>
-            )
-    }
 }
 
 // 모달 컴포넌트
@@ -533,7 +581,7 @@ function ReceiptUploadModal({
     return (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4 py-7">
             <div className="bg-white w-full max-w-md md:max-w-md lg:max-w-3xl rounded-xl shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
-            {/* 대제목 */}
+                {/* 대제목 */}
                 <div className="border-b pb-3">
                     <h2 className="text-xl font-semibold text-gray-900">구매 영수증 업로드</h2>
                 </div>
