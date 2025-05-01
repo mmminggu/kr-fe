@@ -27,7 +27,6 @@ import {
 } from "@/src/components/ui/pagination"
 import { Plus, Search, Edit } from "lucide-react"
 import Image from "next/image"
-
 // Mock data for store accounts
 const mockStoreAccounts = [
   {
@@ -106,6 +105,7 @@ export function StoreAccountsSection() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedAccount, setSelectedAccount] = useState(null)
   const [showDetailDialog, setShowDetailDialog] = useState(false)
+  const [selectedStore, setSelectedStore] = useState(selectedAccount?.storeName || "");
 
   const itemsPerPage = 5
   const totalPages = Math.ceil(mockStoreAccounts.length / itemsPerPage)
@@ -133,29 +133,31 @@ export function StoreAccountsSection() {
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="whitespace-nowrap">
+              <Button className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white">
                 <Plus className="h-4 w-4 mr-2" />
                 계정 추가
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-[600px] w-full">
-              <DialogHeader>
-                <DialogTitle>스토어 계정 추가</DialogTitle>
-                <DialogDescription>새로운 스토어 계정 정보를 입력해주세요.</DialogDescription>
-              </DialogHeader>
+            <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden">
+              {/* 헤더 영역 */}
+              <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Plus className="h-5 w-5" />
+                  스토어 계정 추가
+                </h2>
+                <p className="text-sm text-gray-500 mt-0.5">새로운 스토어 계정 정보를 입력해주세요.</p>
+              </div>
 
-              <div className="grid gap-4 py-4 text-sm">
-                {/* 1행: 스토어명 (Select 넓게) + 와우회원 체크 */}
-                <div className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
-                  <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
-                    <Store className="w-3 h-3" />
-                    <span>스토어명</span>
+              <div className="py-4 px-6 space-y-3 max-h-[60vh] overflow-y-auto">
+                {/* 1. 스토어명 + 와우회원 체크 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <Store className="w-4 h-4 text-gray-400 mr-1" />
+                    <label className="text-xs font-medium text-gray-500">스토어명</label>
                   </div>
-
-                  {/* Select + 체크박스 같은 줄에 */}
-                  <div className="flex gap-2 flex-1 items-center">
-                    <Select>
-                      <SelectTrigger className="w-[250px] text-sm h-8 px-2 border rounded">
+                  <div className="flex gap-3 items-center flex-1">
+                    <Select className="flex-1">
+                      <SelectTrigger className="w-full border-gray-300 h-9 text-sm">
                         <SelectValue placeholder="스토어 선택" />
                       </SelectTrigger>
                       <SelectContent>
@@ -166,57 +168,87 @@ export function StoreAccountsSection() {
                       </SelectContent>
                     </Select>
 
-                    {/* 와우회원 체크박스 */}
-                    <div className="flex items-center gap-1 text-blue-500 text-xs ml-5">
-                      <Checkbox id="wowMember" />
-                      <Label htmlFor="wowMember" className="flex items-center gap-1 ml-1">
-                        와우회원
+                    {/* 와우 멤버십 체크박스 */}
+                    <div className="flex items-center whitespace-nowrap">
+                      <Checkbox
+                          id="wowMember"
+                          className="h-4 w-4 rounded text-blue-500"
+                      />
+                      <Label
+                          htmlFor="wowMember"
+                          className="ml-2 text-xs font-medium text-blue-600"
+                      >
+                        와우 멤버십
                       </Label>
                     </div>
                   </div>
                 </div>
 
-                {/* 2행: 아이디 + 이름 */}
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { id: "add-userId", label: "아이디", icon: <User className="w-3 h-3" /> },
-                    { id: "add-userName", label: "이름", icon: <User className="w-3 h-3" /> },
-                  ].map(({ id, label, icon }) => (
-                      <div key={id} className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
-                        <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
-                          {icon}
-                          <span>{label}</span>
-                        </div>
-                        <Input id={id} className="flex-1 text-sm h-8 px-2" />
-                      </div>
-                  ))}
-                </div>
-
-                {/* 3행: 수취인 + 연락처 */}
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { id: "add-recipient", label: "수취인", icon: <User className="w-3 h-3" /> },
-                    { id: "add-contact", label: "연락처", icon: <Phone className="w-3 h-3" /> },
-                  ].map(({ id, label, icon }) => (
-                      <div key={id} className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
-                        <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
-                          {icon}
-                          <span>{label}</span>
-                        </div>
-                        <Input id={id} className="flex-1 text-sm h-8 px-2" />
-                      </div>
-                  ))}
-                </div>
-
-                {/* 배송지 Select + 배송지 추가 버튼 (아이콘만) */}
-                <div className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50">
-                  <div className="flex items-center gap-1 text-gray-500 min-w-[70px] pt-[5px]">
-                    <MapPin className="w-3 h-3" />
-                    <span>배송지</span>
+                {/* 2. 아이디 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="add-userId" className="text-xs font-medium text-gray-500">아이디</label>
                   </div>
-                  <div className="flex gap-2 flex-1 items-center">
-                    <Select>
-                      <SelectTrigger className="w-full text-sm h-8 px-2 border rounded">
+                  <div className="flex-1">
+                    <Input
+                        id="add-userId"
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. 이름 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="add-userName" className="text-xs font-medium text-gray-500">이름</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="add-userName"
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. 수취인 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="add-recipient" className="text-xs font-medium text-gray-500">수취인</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="add-recipient"
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 5. 연락처 정보 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <Phone className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="add-contact" className="text-xs font-medium text-gray-500">연락처</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="add-contact"
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 6. 배송지 정보 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <MapPin className="w-4 h-4 text-gray-400 mr-1" />
+                    <label className="text-xs font-medium text-gray-500">배송지</label>
+                  </div>
+                  <div className="flex gap-2 flex-1">
+                    <Select className="flex-1">
+                      <SelectTrigger className="w-full border-gray-300 h-9 text-sm">
                         <SelectValue placeholder="배송지 선택" />
                       </SelectTrigger>
                       <SelectContent>
@@ -225,16 +257,33 @@ export function StoreAccountsSection() {
                       </SelectContent>
                     </Select>
 
-                    {/* 배송지 추가 아이콘 버튼 (같은 줄) */}
-                    <Button variant="outline" size="icon" className="h-8 w-8 min-w-0 bg-blue-50 border-blue-200">
-                      <Plus className="w-4 h-4 text-blue-500" />
+                    {/* 배송지 추가 버튼 */}
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9 rounded bg-blue-100 border-blue-300 text-blue-500 hover:bg-blue-50"
+                    >
+                      <Plus className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </div>
-              <DialogFooter className="">
-                <Button type="submit">저장하기</Button>
-              </DialogFooter>
+
+              {/* 푸터 영역 */}
+              <div className="flex items-center justify-end gap-3 px-6 py-3 bg-gray-50 border-t">
+                <Button
+                    variant="outline"
+                    className="h-8 px-3 text-sm font-medium"
+                >
+                  취소
+                </Button>
+                <Button
+                    type="submit"
+                    className="h-8 px-3 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  추가
+                </Button>
+              </div>
             </DialogContent>
           </Dialog>
         </div>
@@ -267,32 +316,37 @@ export function StoreAccountsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           {paginatedAccounts.map((acc) => (
               <div key={acc.id} className="border rounded-lg p-3 shadow-sm bg-white space-y-2">
-                <div className="flex justify-between items-center">
+                {/* 헤더 부분 */}
+                <div className="flex justify-between items-center mb-2.5 pb-1.5 border-b border-gray-100">
                   <div className="flex items-center gap-2">
                     <Image src={acc.storeLogo} alt={`${acc.storeName} 로고`} width={20} height={20} />
-                    <span className="text-base font-bold text-gray-900">{acc.storeName}</span>
+                    <span className="text-base font-semibold text-gray-900">{acc.storeName}</span>
 
-                    {/* ✅ 와우회원 표시 */}
+                    {/* 와우회원 표시 */}
                     {acc.wowMember && (
-                        <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium">
-                          <Image src="/logos/coupang_rocket_wow.png" alt={`${acc.storeName} 로고`} width={50}
-                                 height={15}/>
+                        <div className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-blue-50 border border-blue-100">
+                          <Image src="/logos/coupang_rocket_wow.png" alt="와우 멤버십" width={50} height={15} />
                         </div>
                     )}
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(acc)}>
-                      <Edit className="h-4 w-4" />
+                  <div className="flex gap-1.5">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 rounded-full bg-blue-50 text-blue-600"
+                        onClick={() => handleViewDetails(acc)}
+                    >
+                      <Edit className="h-3.5 w-3.5" />
                       <span className="sr-only">수정</span>
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
-                        className="text-destructive"
+                        className="h-7 w-7 p-0 rounded-full bg-red-50 text-red-600"
                         onClick={() => console.log("삭제", acc.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3.5 w-3.5" />
                       <span className="sr-only">삭제</span>
                     </Button>
                   </div>
@@ -338,69 +392,174 @@ export function StoreAccountsSection() {
         </Pagination>
       </CardContent>
 
-      {/* Detail/Edit Dialog */}
+      {/* 스토어 계정 상세정보 수정 다이얼로그 */}
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>스토어 계정 상세정보</DialogTitle>
-            <DialogDescription>스토어 계정 정보를 수정하실 수 있습니다.</DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden">
+          {/* 헤더 영역 */}
+          <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              스토어 계정 수정
+            </h2>
+            <p className="text-sm text-gray-500 mt-0.5">계정 정보를 수정하실 수 있습니다.</p>
+          </div>
+
+          {/* 콘텐츠 영역 - 라벨과 입력란을 같은 행에 배치 */}
           {selectedAccount && (
-              <div className="grid gap-4 py-4">
-                {[
-                  {
-                    id: "edit-storeName",
-                    label: "스토어명",
-                    icon: <Store className="w-3 h-3" />,
-                    value: selectedAccount.storeName,
-                  },
-                  {
-                    id: "edit-userId",
-                    label: "아이디",
-                    icon: <User className="w-3 h-3" />,
-                    value: selectedAccount.userId,
-                  },
-                  {
-                    id: "edit-name",
-                    label: "이름",
-                    icon: <User className="w-3 h-3" />,
-                    value: selectedAccount.userName ?? selectedAccount.name,
-                  },
-                  {
-                    id: "edit-recipient",
-                    label: "수취인",
-                    icon: <User className="w-3 h-3" />,
-                    value: selectedAccount.recipient,
-                  },
-                  {
-                    id: "edit-contact",
-                    label: "연락처",
-                    icon: <Phone className="w-3 h-3" />,
-                    value: selectedAccount.contact,
-                  },
-                  {
-                    id: "edit-address",
-                    label: "배송지",
-                    icon: <MapPin className="w-3 h-3" />,
-                    value: selectedAccount.address,
-                  },
-                ].map(({ id, label, icon, value }) => (
-                    <div
-                        key={id}
-                        className="flex items-start border rounded-md px-3 py-2 gap-2 bg-gray-50"
+              <div className="py-4 px-6 space-y-3 max-h-[60vh] overflow-y-auto">
+                {/* 1. 스토어명 섹션 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <Store className="w-4 h-4 text-gray-400 mr-1" />
+                    <label className="text-xs font-medium text-gray-500">스토어명</label>
+                  </div>
+                  <div className="flex gap-3 items-center flex-1">
+                    <Select
+                        defaultValue={selectedAccount.storeName}
+                        onValueChange={(value) => setSelectedStore(value)}
+                        className="flex-1"
                     >
-                      <div className="flex items-center gap-1 text-gray-500 text-sm min-w-[70px] pt-[5px]">
-                        {icon}
-                        <span>{label}</span>
-                      </div>
-                      <Input id={id} defaultValue={value} className="flex-1 text-sm h-8 px-2" />
-                    </div>
-                ))}
+                      <SelectTrigger className="w-full border-gray-300 h-9 text-sm">
+                        <SelectValue placeholder="스토어 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="쿠팡">쿠팡</SelectItem>
+                        <SelectItem value="네이버">네이버</SelectItem>
+                        <SelectItem value="올리브영">올리브영</SelectItem>
+                        <SelectItem value="11번가">11번가</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* 와우 멤버십 체크박스 */}
+                    {(selectedStore === "쿠팡" || (!selectedStore && selectedAccount.storeName === "쿠팡")) && (
+                        <div className="flex items-center whitespace-nowrap">
+                          <Checkbox
+                              id="edit-wowMember"
+                              defaultChecked={selectedAccount.wowMember}
+                              className="h-4 w-4 rounded text-blue-500"
+                          />
+                          <Label
+                              htmlFor="edit-wowMember"
+                              className="ml-2 text-xs font-medium text-blue-600"
+                          >
+                            와우 멤버십
+                          </Label>
+                        </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 2. 아이디 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="edit-userId" className="text-xs font-medium text-gray-500">아이디</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="edit-userId"
+                        defaultValue={selectedAccount.userId}
+                        onChange={(e) => console.log(`userId changed:`, e.target.value)}
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. 이름 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="edit-name" className="text-xs font-medium text-gray-500">이름</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="edit-name"
+                        defaultValue={selectedAccount.userName ?? selectedAccount.name}
+                        onChange={(e) => console.log(`name changed:`, e.target.value)}
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. 수취인 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <User className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="edit-recipient" className="text-xs font-medium text-gray-500">수취인</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="edit-recipient"
+                        defaultValue={selectedAccount.recipient}
+                        onChange={(e) => console.log(`recipient changed:`, e.target.value)}
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 5. 연락처 정보 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <Phone className="w-4 h-4 text-gray-400 mr-1" />
+                    <label htmlFor="edit-contact" className="text-xs font-medium text-gray-500">연락처</label>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                        id="edit-contact"
+                        defaultValue={selectedAccount.contact}
+                        onChange={(e) => console.log(`contact changed:`, e.target.value)}
+                        className="w-full border-gray-300 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 6. 배송지 정보 */}
+                <div className="flex items-center">
+                  <div className="w-20 flex items-center">
+                    <MapPin className="w-4 h-4 text-gray-400 mr-1" />
+                    <label className="text-xs font-medium text-gray-500">배송지</label>
+                  </div>
+                  <div className="flex gap-2 flex-1">
+                    <Select defaultValue="current" className="flex-1">
+                      <SelectTrigger className="w-full border-gray-300 h-9 text-sm">
+                        <SelectValue placeholder="배송지 선택" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="current">{selectedAccount.address}</SelectItem>
+                        <SelectItem value="home">집</SelectItem>
+                        <SelectItem value="office">회사</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {/* 배송지 추가 버튼 */}
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9 rounded bg-blue-100 border-blue-300 text-blue-500 hover:bg-blue-50"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
           )}
-          <DialogFooter>
-            <Button type="submit">저장하기</Button>
-          </DialogFooter>
+
+          {/* 푸터 영역 */}
+          <div className="flex items-center justify-end gap-3 px-6 py-3 bg-gray-50 border-t">
+            <Button
+                variant="outline"
+                onClick={() => setShowDetailDialog(false)}
+                className="h-8 px-3 text-sm font-medium"
+            >
+              취소
+            </Button>
+            <Button
+                type="submit"
+                className="h-8 px-3 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              수정
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </Card>
@@ -416,7 +575,7 @@ function InfoBlock({
   value: string
 }) {
   return (
-      <div className="flex items-start gap-2 border bg-gray-50 rounded px-2 py-1">
+      <div className="flex items-start gap-2 bg-gray-100 rounded px-2 py-1">
         {/* 고정 너비 라벨 영역 */}
         <div className="flex items-center gap-1 text-gray-500 text-[11px] min-w-[40px] shrink-0">
           {icon}
