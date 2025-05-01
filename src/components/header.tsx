@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { Menu, Bell } from "lucide-react";
 import {useState} from "react";
+import { useRouter } from "next/navigation";
 import NotificationPanel from "@/src/components/NotificationPanel";
 
 export function Header() {
@@ -14,6 +15,7 @@ export function Header() {
         { label: "마이페이지", path: "/mypage2" },
         { label: "고객센터", path: "/customerCenter" },
     ];
+    const router = useRouter();
 
     return (
         <header className="border-b bg-white sticky top-0 z-50">
@@ -68,10 +70,10 @@ export function Header() {
                     </button>
 
                     {/* 로그인/회원가입 */}
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => router.push("/login")}>
                         로그인
                     </Button>
-                    <Button size="sm">회원가입</Button>
+                    <Button size="sm" onClick={() => router.push("/signup")}>회원가입</Button>
                 </div>
                 {isNotificationOpen && (
                     <NotificationPanel
