@@ -143,7 +143,6 @@ export default function NoticeTab({ id, onBack }: AnnouncementDetailProps) {
                                 </div>
                                 <div className="flex justify-between items-center text-sm text-gray-500 mt-2">
                                     <span>작성일: {selectedNotice.date}</span>
-                                    <span>조회수: {selectedNotice.views.toLocaleString()}</span>
                                 </div>
                             </div>
 
@@ -269,8 +268,7 @@ export default function NoticeTab({ id, onBack }: AnnouncementDetailProps) {
                         <div className="grid grid-cols-12 bg-gray-100 py-3 px-4 text-sm font-medium text-gray-700 border-b">
                             <div className="col-span-1 text-center">번호</div>
                             <div className="col-span-7 md:col-span-5">제목</div>
-                            <div className="col-span-4 md:col-span-3 text-center">날짜</div>
-                            <div className="hidden md:block md:col-span-3 text-center">조회수</div>
+                            <div className="col-span-4 md:col-span-3 md:col-start-10 text-center">날짜</div>
                         </div>
 
                         {/* 목록 내용 */}
@@ -293,11 +291,8 @@ export default function NoticeTab({ id, onBack }: AnnouncementDetailProps) {
                                             }
                                             <span className="truncate">{notice.title}</span>
                                         </div>
-                                        <div className="col-span-4 md:col-span-3 text-sm text-gray-500 text-center">
+                                        <div className="col-span-4 md:col-span-3 md:col-start-10 text-sm text-gray-500 text-center">
                                             {notice.date}
-                                        </div>
-                                        <div className="hidden md:block md:col-span-3 text-sm text-gray-500 text-center">
-                                            {notice.views}
                                         </div>
                                     </button>
                                 ))
