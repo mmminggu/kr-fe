@@ -6,7 +6,7 @@ import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Alert, AlertDescription } from "@/src/components/ui/alert"
-import {AlertCircle, Lock, Mail, Phone, ShieldCheck, User, Landmark, CreditCard, UserCheck} from "lucide-react"
+import {AlertCircle, Lock, Mail, Phone, ShieldCheck, User, MessageCircle, CreditCard, UserCheck} from "lucide-react"
 
 export function UserInfoSection() {
   const [showVerification, setShowVerification] = useState(false)
@@ -17,7 +17,7 @@ export function UserInfoSection() {
         <CardTitle>내정보 수정</CardTitle>
         <CardDescription>개인 정보를 수정하실 수 있습니다.</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 px-7">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
           {/* 이메일 (수정 불가) */}
           <div className="flex items-center gap-3">
@@ -118,6 +118,21 @@ export function UserInfoSection() {
                 </div>
             )}
           </div>
+          {/* 카카오톡 ID - 왼쪽에만 표시, 오른쪽은 비움 */}
+          <div className="flex items-center gap-3">
+            <Label className="w-36 text-gray-700 flex items-center gap-1">
+              <MessageCircle className="w-4 h-4" />
+              카카오톡 ID
+            </Label>
+            <Input
+                type="text"
+                placeholder="kakao123"
+                className="w-full"
+            />
+          </div>
+
+          {/* 오른쪽 비워두기 */}
+          <div></div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end">

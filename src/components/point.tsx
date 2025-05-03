@@ -13,12 +13,14 @@ import {
 } from "lucide-react"
 
 type PointRecord = {
-    id: number
-    campaign: string
-    type: "적립" | "차감"
-    point: number
-    date: string
-}
+    id: number;
+    campaign?: string; // 없을 수도 있음
+    detail?: string;    // 상세 사유
+    type: "적립" | "출금신청" | "출금완료" | "차감";
+    point: number;
+    date: string;
+};
+
 
 const iconMap = {
     green: PiggyBank,
@@ -29,18 +31,19 @@ const iconMap = {
 
 const sampleData: PointRecord[] = [
     { id: 1, campaign: "프리미엄 커피 리뷰", type: "적립", point: 1500, date: "2025-04-12" },
-    { id: 2, campaign: "헤어케어 제품", type: "차감", point: -3000, date: "2025-04-11" },
-    { id: 3, campaign: "리뷰 미작성 패널티", type: "차감", point: -2000, date: "2025-04-09" },
-    { id: 4, campaign: "건강기능식품 리뷰", type: "적립", point: 5000, date: "2025-04-08" },
-    { id: 5, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 6, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 7, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
+    { id: 2, campaign: "프리미엄 커피 리뷰", type: "차감", point: -200, date: "2025-04-11", detail: "리뷰 미작성 패널티" },
+    { id: 3, campaign: "", type: "차감", point: -50, date: "2025-04-10", detail: "비밀번호 찾기" },
+    { id: 4, campaign: "", type: "출금", point: -10000, date: "2025-04-08", detail: "출금 신청" },
+    { id: 5, campaign: "", type: "출금", point: -10000, date: "2025-04-10", detail: "출금 완료" },
+    { id: 6, campaign: "캠페인 AAAA", type: "적립", point: 2000, date: "2025-04-09" },
+    { id: 7, campaign: "건강기능식품 리뷰", type: "적립", point: 5000, date: "2025-04-08" },
     { id: 8, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 9, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
-    { id: 10, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
+    { id: 10, campaign: "캠페인 AAAA", type: "적립", point: 2000, date: "2025-04-06" },
     { id: 11, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 12, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
     { id: 13, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
+    { id: 14, campaign: "테스트 캠페인", type: "적립", point: 3000, date: "2025-04-07" },
 ]
 
 const dateRanges = {
@@ -75,7 +78,7 @@ export default function PointPage() {
 
             const matchDate = from && to ? itemDate >= from && itemDate <= to : true
             const matchType = type === "전체" || item.type === type
-            const matchKeyword = item.campaign.includes(keyword)
+            const matchKeyword = item.campaign?.includes(keyword);
 
             return matchDate && matchType && matchKeyword
         })
@@ -144,6 +147,7 @@ export default function PointPage() {
                             <SelectItem value="전체">전체</SelectItem>
                             <SelectItem value="적립">적립</SelectItem>
                             <SelectItem value="차감">차감</SelectItem>
+                            <SelectItem value="출금">출금</SelectItem>
                         </SelectContent>
                     </Select>
 
@@ -178,7 +182,12 @@ export default function PointPage() {
                                 className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                             >
                                 <td className="py-2 px-2">{item.id}</td>
-                                <td className="px-2">{item.campaign}</td>
+                                <td className="text-sm text-gray-900">
+                                    {item.campaign
+                                        ? `[${item.campaign}]${item.detail ? ` - ${item.detail}` : ""}`
+                                        : `${item.detail ? ` ${item.detail}` : ""}`}
+                                </td>
+
                                 <td className="px-2">{item.type}</td>
                                 <td
                                     className={`px-2 ${

@@ -145,7 +145,7 @@ export default function FindAccountPage() {
         // 아이디 찾기 요청 (실제로는 API 호출)
         setTimeout(() => {
             setIdResult({
-                email: 'user***@gmail.com',
+                email: 'users***@gmail.com',
                 registerDate: '2023년 10월 15일'
             });
         }, 800);

@@ -2,7 +2,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react";
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
 import {SearchIcon, UploadCloud, AlertCircle, Pencil, Info} from "lucide-react";
@@ -312,7 +312,7 @@ export default function MyCampaignPage() {
                 {paginatedCampaigns.map((campaign) => (
                     <div
                         key={campaign.id}
-                        onClick={() => router.push(`/campaignDetail`)} // 추후 /campaigns/${campaign.id} 로 변경 가능
+                        onClick={() => router.push(`/campaignDetail`)} // 추후 /CampaignList.tsx/${campaign.id} 로 변경 가능
                         className={"cursor-pointer"}
                     >
                         <div key={campaign.id} className="border rounded-xl hover:shadow-md transition-shadow shadow-sm bg-white overflow-hidden">
@@ -576,6 +576,37 @@ function ReceiptUploadModal({
         if (file) setImageFile(file);
     };
 
+    // 1. handleDrop 함수 추가
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files?.[0];
+        if (file) setImageFile(file);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault(); // 이게 있어야 drop이 작동함
+    };
+
+    useEffect(() => {
+        const handlePaste = (event: ClipboardEvent) => {
+            const items = event.clipboardData?.items;
+            if (!items) return;
+
+            for (const item of items) {
+                if (item.type.indexOf("image") !== -1) {
+                    const file = item.getAsFile();
+                    if (file) setImageFile(file);
+                }
+            }
+        };
+
+        window.addEventListener("paste", handlePaste);
+        return () => {
+            window.removeEventListener("paste", handlePaste);
+        };
+    }, []);
+
+
     const isCorrectionRequired = campaign.status === "구매증빙 수정";
 
     return (
@@ -618,8 +649,11 @@ function ReceiptUploadModal({
                 <div className="flex flex-col sm:flex-row gap-2 w-full border border-gray-200 rounded-md p-3">
                     {/* 좌측: 업로드 영역 */}
                     <div className="sm:w-1/2 w-full flex flex-col items-center justify-center gap-2">
-                        {/* 미리보기 영역 */}
-                        <div className="w-full border rounded-md bg-gray-50 aspect-[4/3] flex items-center justify-center overflow-hidden">
+                        <div
+                            className="w-full border rounded-md bg-gray-50 aspect-[4/3] flex items-center justify-center overflow-hidden"
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                        >
                             {imageFile ? (
                                 <img
                                     src={URL.createObjectURL(imageFile)}
@@ -627,7 +661,7 @@ function ReceiptUploadModal({
                                     className="w-full h-full object-contain"
                                 />
                             ) : (
-                                <span className="text-gray-400 text-sm">미리보기 없음</span>
+                                <span className="text-gray-400 text-sm text-center px-4">이미지를 드래그하거나 Ctrl+V로 붙여넣기 하세요.</span>
                             )}
                         </div>
 
