@@ -2,11 +2,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import AdminLayout from '@/components/layouts/AdminLayout';
-import SettlementTable from '@/components/admin/settlements/SettlementTable';
-import SettlementFilter from '@/components/admin/settlements/SettlementFilter';
-import SettlementStats from '@/components/admin/settlements/SettlementStats';
-import { Button } from '@/components/ui/button';
+import SettlementTable from '@/src/components/admin/settlements/SettlementTable';
+import SettlementFilter from '@/src/components/admin/settlements/SettlementFilter';
+import SettlementStats from '@/src/components/admin/settlements/SettlementStats';
+import { Button } from '@/src/components/ui/button';
 import { FileTextIcon, DownloadIcon } from 'lucide-react';
 
 export default function SettlementsPage() {
