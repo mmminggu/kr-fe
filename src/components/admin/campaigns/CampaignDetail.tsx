@@ -1,12 +1,12 @@
 'use client';
-
 import { useState } from 'react';
 import { Progress } from '@/src/components/ui/progress';
+
 import {
-    BadgeCheck, AlertCircle, Users, Gift,
-    Clock, Star, Sparkles, PieChart, MessageCircle,
+    BadgeCheck, CircleCheck, CircleX, AlertCircle, Users, Gift,
+    Clock, Plus , Sparkles, PieChart, MessageCircle,
     CalendarDays, Bell, FileCheck, Briefcase, ChevronRight,
-    Check, X, Pause, Play, Download, Filter
+    Check, X, Pause, Play, Download, Filter, Pencil, Trash2
 } from 'lucide-react';
 
 export default function CampaignDashboard() {
@@ -21,7 +21,24 @@ export default function CampaignDashboard() {
         productPrice: 159000,
         shippingFee: 3000,
         rewardPoints: 15000,
-        options: ['블랙', '화이트', '블루'],
+        options: [
+            {
+                name: '블랙',
+                isWished: true,                 // 찜 여부
+                isPhotoRequired: true,         // 포토 증빙 여부
+                reviewType: '포토리뷰',         // '포토리뷰' | '텍스트리뷰'
+                deliveryType: '실배송',         // '실배송' | '빈박스'
+                recruitCount: 30               // 모집 인원
+            },
+            {
+                name: '화이트',
+                isWished: false,
+                isPhotoRequired: false,
+                reviewType: '텍스트리뷰',
+                deliveryType: '빈박스',
+                recruitCount: 50
+            }
+        ],
         totalRecruits: 100,
         currentRecruits: 62,
         csWaiting: 8,
@@ -172,8 +189,13 @@ export default function CampaignDashboard() {
                             <span className="text-sm font-medium text-gray-500">진행률</span>
                             <span className="text-sm font-semibold text-gray-900">{campaign.progress}%</span>
                         </div>
-                        <Progress value={campaign.progress} className="h-2 bg-gray-200"
-                                  indicatorClassName="bg-gradient-to-r from-indigo-500 to-purple-600"/>
+                        <Progress value={campaign.progress} className="h-2 bg-gray-200" />
+                        <style jsx>{`
+                          .progress-bar div:first-child > div {
+                            background-image: linear-gradient(to right, #6366f1, #8b5cf6);
+                          }
+                        `}</style>
+
                     </div>
 
                     {/* 제품 정보 */}
@@ -202,19 +224,54 @@ export default function CampaignDashboard() {
                         </div>
                         <p className="text-xl font-semibold text-indigo-600">{campaign.rewardPoints.toLocaleString()} P</p>
                     </div>
-
-                    {/* 옵션 정보 */}
-                    <div className="bg-gray-50 rounded-lg p-4">
-                        <h3 className="text-sm font-medium text-gray-500 mb-2">옵션</h3>
-                        <div className="flex flex-wrap gap-1">
-                            {campaign.options.map((option, index) => (
-                                <span key={index} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full">
-                  {option}
-                </span>
-                            ))}
-                        </div>
-                    </div>
                 </div>
+                {/* 옵션 정보 */}
+                <section>
+                    <div className="flex justify-end mb-2">
+                        <button
+                            /*onClick={handleAddOption}*/
+                            className="p-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                            aria-label="옵션 추가"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+
+                    {/* 옵션 테이블 */}
+                    <table className="w-full table-fixed text-sm text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
+                        <thead className="bg-gray-100 text-xs font-semibold text-gray-600">
+                        <tr>
+                            <th className="px-4 py-2 text-left w-[30%]">옵션명</th>
+                            <th className="px-4 py-2 text-left w-[6rem]">찜</th>
+                            <th className="px-4 py-2 text-left w-[6rem]">포토</th>
+                            <th className="px-4 py-2 text-left w-[8rem]">리뷰 타입</th>
+                            <th className="px-4 py-2 text-left w-[8rem]">배송 형태</th>
+                            <th className="px-4 py-2 text-left w-[6rem]">모집 인원</th>
+                            <th className="px-4 py-2 text-left w-[6rem]"></th>
+                        </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                        {campaign.options.map((opt, index) => (
+                            <tr key={index} className="hover:bg-gray-50">
+                                <td className="px-4 py-3">{opt.name}</td>
+                                <td className="px-4 py-3 text-center">{opt.isWished ?  <CircleCheck size={16} className="text-green-600" /> : <CircleX size={16} className="text-red-600" />}</td>
+                                <td className="px-4 py-3 text-center">{opt.isPhotoRequired ? <CircleCheck size={16} className="text-green-600" /> : <CircleX size={16} className="text-red-600" />}</td>
+                                <td className="px-4 py-3">{opt.reviewType}</td>
+                                <td className="px-4 py-3">{opt.deliveryType}</td>
+                                <td className="px-4 py-3">{opt.recruitCount}명</td>
+                                <td className="px-4 py-3 space-x-3">
+                                    <button onClick={() => handleEditOption(index)} className="text-gray-500 hover:text-gray-800">
+                                        <Pencil size={16} />
+                                    </button>
+                                    <button onClick={() => handleDeleteOption(index)} className="text-gray-500 hover:text-red-600">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </section>
             </div>
 
             {/* 대시보드 통계 */}
@@ -523,5 +580,6 @@ export default function CampaignDashboard() {
                 </div>
             </div>
         </div>
-    );
+);
 }
+
