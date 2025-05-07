@@ -29,10 +29,10 @@ import {Pagination} from '@/src/components/ui/pagination';
 
 // 정산 상태별 배지 스타일
 const statusStyles = {
-    completed: 'bg-green-100 text-green-800  ,
-    pending: 'bg-yellow-100 text-yellow-800  ,
-    rejected: 'bg-red-100 text-red-800  ,
-    processing: 'bg-blue-100 text-blue-800  ,
+    completed: 'bg-green-100 text-green-800',
+    pending: 'bg-yellow-100 text-yellow-800',
+    rejected: 'bg-red-100 text-red-800',
+    processing: 'bg-blue-100 text-blue-800',
 };
 
 // 임시 데이터
