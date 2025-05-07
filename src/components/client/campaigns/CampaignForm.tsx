@@ -422,14 +422,14 @@ export default function CampaignForm() {
     const renderBasicInfoStep = () => {
         return (
             <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900  flex items-center">
                     <ClipboardList className="mr-2" size={20} />
                     기본 정보
                 </h2>
 
                 {/* 캠페인 제목 */}
                 <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700  mb-1">
                         캠페인 제목 <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -438,7 +438,7 @@ export default function CampaignForm() {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="예: 여름 신상품 체험단 모집"
                     />
                     {errors.title && (
@@ -451,7 +451,7 @@ export default function CampaignForm() {
 
                 {/* 카테고리 */}
                 <div>
-                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-700  mb-1">
                         카테고리 <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -460,7 +460,7 @@ export default function CampaignForm() {
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
-                            className="w-full appearance-none px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full appearance-none px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="">카테고리 선택</option>
                             {categories.map((category) => (
@@ -483,12 +483,12 @@ export default function CampaignForm() {
 
                 {/* 메인 이미지 업로드 */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         메인 이미지 <span className="text-red-500">*</span>
                     </label>
                     <div
-                        className={`border-2 border-dashed rounded-lg p-4 mt-1 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors ${
-                            errors.mainImageUrl ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-700'
+                        className={`border-2 border-dashed rounded-lg p-4 mt-1 text-center cursor-pointer hover:bg-gray-50  transition-colors ${
+                            errors.mainImageUrl ? 'border-red-300 ' : 'border-gray-300 '
                         }`}
                         onClick={triggerMainImageUpload}
                     >
@@ -522,10 +522,10 @@ export default function CampaignForm() {
                         ) : (
                             <div className="py-8">
                                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-2 text-sm text-gray-500 ">
                                     클릭하여 메인 이미지를 업로드하세요
                                 </p>
-                                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                                <p className="mt-1 text-xs text-gray-400 ">
                                     권장 크기: 1200 x 800px, 최대 5MB
                                 </p>
                             </div>
@@ -541,7 +541,7 @@ export default function CampaignForm() {
 
                 {/* 제품명 */}
                 <div>
-                    <label htmlFor="productName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="productName" className="block text-sm font-medium text-gray-700  mb-1">
                         제품명 <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -550,7 +550,7 @@ export default function CampaignForm() {
                         name="productName"
                         value={formData.productName}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="예: 프리미엄 헤어 케어 세트"
                     />
                     {errors.productName && (
@@ -563,7 +563,7 @@ export default function CampaignForm() {
 
                 {/* 제품 가격 */}
                 <div>
-                    <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700  mb-1">
                         제품 가격
                     </label>
                     <div className="relative">
@@ -576,7 +576,7 @@ export default function CampaignForm() {
                             name="productPrice"
                             value={formData.productPrice}
                             onChange={handleChange}
-                            className="w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="0"
                             min="0"
                         />
@@ -585,7 +585,7 @@ export default function CampaignForm() {
 
                 {/* 제품 설명 */}
                 <div>
-                    <label htmlFor="productDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="productDescription" className="block text-sm font-medium text-gray-700  mb-1">
                         제품 설명 <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -594,7 +594,7 @@ export default function CampaignForm() {
                         value={formData.productDescription}
                         onChange={handleChange}
                         rows={4}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="제품에 대한 간단한 설명을 입력하세요"
                     />
                     {errors.productDescription && (
@@ -607,7 +607,7 @@ export default function CampaignForm() {
 
                 {/* 추가 이미지 업로드 (선택사항) */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         추가 이미지 (최대 5개)
                     </label>
 
@@ -618,7 +618,7 @@ export default function CampaignForm() {
                                 <img
                                     src={img}
                                     alt={`추가 이미지 ${index + 1}`}
-                                    className="h-32 w-full object-cover rounded-lg border border-gray-300 dark:border-gray-700"
+                                    className="h-32 w-full object-cover rounded-lg border border-gray-300 "
                                 />
                                 <button
                                     type="button"
@@ -634,7 +634,7 @@ export default function CampaignForm() {
                         {formData.additionalImages.length < 5 && (
                             <div
                                 onClick={triggerAdditionalImageUpload}
-                                className="h-32 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                                className="h-32 border-2 border-dashed border-gray-300  rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50  transition-colors"
                             >
                                 <input
                                     type="file"
@@ -645,7 +645,7 @@ export default function CampaignForm() {
                                     multiple
                                 />
                                 <Plus className="h-8 w-8 text-gray-400" />
-                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">추가 이미지</p>
+                                <p className="mt-1 text-xs text-gray-500 ">추가 이미지</p>
                             </div>
                         )}
                     </div>
@@ -658,14 +658,14 @@ export default function CampaignForm() {
     const renderReviewerStep = () => {
         return (
             <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900  flex items-center">
                     <Users size={20} className="mr-2" />
                     리뷰어 모집 정보
                 </h2>
 
                 {/* 모집 인원 */}
                 <div>
-                    <label htmlFor="reviewerCount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="reviewerCount" className="block text-sm font-medium text-gray-700  mb-1">
                         모집 인원 <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -675,7 +675,7 @@ export default function CampaignForm() {
                             name="reviewerCount"
                             value={formData.reviewerCount}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="0"
                             min="1"
                         />
@@ -693,7 +693,7 @@ export default function CampaignForm() {
 
                 {/* 리뷰 비용 */}
                 <div>
-                    <label htmlFor="reviewBudget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="reviewBudget" className="block text-sm font-medium text-gray-700  mb-1">
                         리뷰어당 지급 금액 <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -706,7 +706,7 @@ export default function CampaignForm() {
                             name="reviewBudget"
                             value={formData.reviewBudget}
                             onChange={handleChange}
-                            className="w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="0"
                             min="0"
                             step="1000"
@@ -722,12 +722,12 @@ export default function CampaignForm() {
 
                 {/* 캠페인 기간 */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         캠페인 기간 <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="campaignDuration.start" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                            <label htmlFor="campaignDuration.start" className="block text-xs text-gray-500  mb-1">
                                 시작일
                             </label>
                             <div className="relative">
@@ -740,13 +740,13 @@ export default function CampaignForm() {
                                     name="campaignDuration.start"
                                     value={formData.campaignDuration.start}
                                     onChange={handleChange}
-                                    className="w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     min={todayString}
                                 />
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="campaignDuration.end" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                            <label htmlFor="campaignDuration.end" className="block text-xs text-gray-500  mb-1">
                                 종료일
                             </label>
                             <div className="relative">
@@ -759,7 +759,7 @@ export default function CampaignForm() {
                                     name="campaignDuration.end"
                                     value={formData.campaignDuration.end}
                                     onChange={handleChange}
-                                    className="w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     min={formData.campaignDuration.start}
                                 />
                             </div>
@@ -769,7 +769,7 @@ export default function CampaignForm() {
 
                 {/* 리뷰 마감일 */}
                 <div>
-                    <label htmlFor="reviewDeadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="reviewDeadline" className="block text-sm font-medium text-gray-700  mb-1">
                         리뷰 마감일 <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -782,18 +782,18 @@ export default function CampaignForm() {
                             name="reviewDeadline"
                             value={formData.reviewDeadline}
                             onChange={handleChange}
-                            className="w-full pl-10 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                             min={formData.campaignDuration.end}
                         />
                     </div>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500 ">
                         캠페인 종료일 이후로 설정해주세요. 리뷰어는 이 날짜까지 리뷰를 제출해야 합니다.
                     </p>
                 </div>
 
                 {/* 리뷰 플랫폼 */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         리뷰 플랫폼 <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -804,9 +804,9 @@ export default function CampaignForm() {
                                 onClick={() => toggleReviewPlatform(platform.id)}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium border ${
                                     formData.reviewPlatforms.includes(platform.id)
-                                        ? 'bg-blue-50 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-600'
-                                        : 'bg-white text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
-                                } hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors`}
+                                        ? 'bg-blue-50 text-blue-700 border-blue-300   '
+                                        : 'bg-white text-gray-700 border-gray-300   '
+                                } hover:bg-gray-50  transition-colors`}
                             >
                                 {platform.name}
                             </button>
@@ -822,7 +822,7 @@ export default function CampaignForm() {
 
                 {/* 리뷰어 조건 */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         리뷰어 조건 (선택사항)
                     </label>
 
@@ -833,21 +833,21 @@ export default function CampaignForm() {
                             return (
                                 <div key={condition.id} className="flex items-center gap-2">
                                     <div className="flex-1">
-                                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <div className="text-sm font-medium text-gray-700  mb-1">
                                             {conditionInfo?.name}
                                         </div>
                                         <input
                                             type="text"
                                             value={condition.value}
                                             onChange={(e) => handleReviewerConditionChange(condition.id, e.target.value)}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             placeholder={`${conditionInfo?.name} 조건 입력`}
                                         />
                                     </div>
                                     <button
                                         type="button"
                                         onClick={() => removeReviewerCondition(condition.id)}
-                                        className="h-10 w-10 flex items-center justify-center text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                                        className="h-10 w-10 flex items-center justify-center text-red-500 hover:text-red-600  "
                                     >
                                         <X size={18} />
                                     </button>
@@ -862,7 +862,7 @@ export default function CampaignForm() {
                             <div>
                                 <button
                                     type="button"
-                                    className="inline-flex justify-center items-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    className="inline-flex justify-center items-center rounded-md border border-gray-300  shadow-sm px-4 py-2 bg-white  text-sm font-medium text-gray-700  hover:bg-gray-50  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                     onClick={() => {
                                         const dropdown = document.getElementById('condition-dropdown');
                                         if (dropdown) {
@@ -876,7 +876,7 @@ export default function CampaignForm() {
                             </div>
                             <div
                                 id="condition-dropdown"
-                                className="hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
+                                className="hidden origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white  ring-1 ring-black ring-opacity-5 z-10"
                             >
                                 <div className="py-1">
                                     {reviewerConditions
@@ -888,7 +888,7 @@ export default function CampaignForm() {
                                             <button
                                                 key={condition.id}
                                                 type="button"
-                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                 onClick={() => {
                                                     addReviewerCondition(condition.id);
                                                     const dropdown = document.getElementById('condition-dropdown');
@@ -913,14 +913,14 @@ export default function CampaignForm() {
     const renderDetailStep = () => {
         return (
             <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <h2 className="text-xl font-semibold text-gray-900  flex items-center">
                     <ClipboardList size={20} className="mr-2" />
                     상세 정보
                 </h2>
 
                 {/* 캠페인 설명 */}
                 <div>
-                    <label htmlFor="campaignDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="campaignDescription" className="block text-sm font-medium text-gray-700  mb-1">
                         캠페인 상세 설명 <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -929,7 +929,7 @@ export default function CampaignForm() {
                         value={formData.campaignDescription}
                         onChange={handleChange}
                         rows={8}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="캠페인의 상세 설명을 입력하세요. 리뷰어가 알아야 할 제품의 특징, 리뷰 작성 시 포함해야 할 내용 등을 상세히 기재해주세요."
                     />
                     {errors.campaignDescription && (
@@ -942,7 +942,7 @@ export default function CampaignForm() {
 
                 {/* 캠페인 유의사항 */}
                 <div>
-                    <label htmlFor="campaignNotice" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="campaignNotice" className="block text-sm font-medium text-gray-700  mb-1">
                         캠페인 유의사항
                     </label>
                     <textarea
@@ -951,27 +951,27 @@ export default function CampaignForm() {
                         value={formData.campaignNotice}
                         onChange={handleChange}
                         rows={4}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg bg-white  text-gray-900  focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="리뷰어들이 주의해야 할 사항이 있다면 입력해주세요."
                     />
                 </div>
 
                 {/* 해시태그 */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-700  mb-1">
                         해시태그 (선택사항)
                     </label>
-                    <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+                    <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300  rounded-lg bg-white ">
                         {formData.tags.map((tag, index) => (
                             <div
                                 key={index}
-                                className="flex items-center bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-sm"
+                                className="flex items-center bg-blue-100 text-blue-800   px-2 py-1 rounded-full text-sm"
                             >
                                 <span className="mr-1">#{tag}</span>
                                 <button
                                     type="button"
                                     onClick={() => handleRemoveTag(tag)}
-                                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 focus:outline-none"
+                                    className="text-blue-600  hover:text-blue-800  focus:outline-none"
                                 >
                                     <X size={14} />
                                 </button>
@@ -982,11 +982,11 @@ export default function CampaignForm() {
                             value={tagInput}
                             onChange={(e) => setTagInput(e.target.value)}
                             onKeyDown={handleTagKeyDown}
-                            className="flex-1 min-w-32 border-0 p-0 bg-transparent text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-0"
+                            className="flex-1 min-w-32 border-0 p-0 bg-transparent text-gray-900  focus:outline-none focus:ring-0"
                             placeholder={formData.tags.length === 0 ? "해시태그 입력 (엔터로 추가)" : ""}
                         />
                     </div>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500 ">
                         해시태그를 입력하고 엔터를 누르면 추가됩니다. (예: 신상품, 여름아이템)
                     </p>
                 </div>
@@ -1001,21 +1001,21 @@ export default function CampaignForm() {
                         onChange={handleCheckboxChange}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <label htmlFor="isFeatured" className="ml-2 block text-sm text-gray-900 dark:text-gray-100">
+                    <label htmlFor="isFeatured" className="ml-2 block text-sm text-gray-900 ">
                         프리미엄 캠페인으로 설정 (추가 비용 발생)
                     </label>
                 </div>
 
                 {/* 프리미엄 캠페인 설명 */}
                 {formData.isFeatured && (
-                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4">
+                    <div className="bg-amber-50  border border-amber-200  rounded-lg p-4">
                         <div className="flex">
-                            <Info size={20} className="text-amber-500 dark:text-amber-400 mr-2 flex-shrink-0" />
+                            <Info size={20} className="text-amber-500  mr-2 flex-shrink-0" />
                             <div>
-                                <h3 className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                                <h3 className="text-sm font-medium text-amber-800 ">
                                     프리미엄 캠페인 안내
                                 </h3>
-                                <p className="mt-1 text-sm text-amber-700 dark:text-amber-400">
+                                <p className="mt-1 text-sm text-amber-700 ">
                                     프리미엄 캠페인은 리뷰어 목록 상단에 노출되며, 더 많은 리뷰어에게 노출됩니다.
                                     추가 비용은 캠페인 당 30,000원이며, 익월 정산 시 함께 청구됩니다.
                                 </p>
@@ -1026,10 +1026,10 @@ export default function CampaignForm() {
 
                 {/* 제출 오류 메시지 */}
                 {errors.submit && (
-                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+                    <div className="bg-red-50  border border-red-200  rounded-lg p-4">
                         <div className="flex">
                             <AlertCircle size={20} className="text-red-500 mr-2 flex-shrink-0" />
-                            <p className="text-sm text-red-700 dark:text-red-400">{errors.submit}</p>
+                            <p className="text-sm text-red-700 ">{errors.submit}</p>
                         </div>
                     </div>
                 )}
@@ -1041,8 +1041,8 @@ export default function CampaignForm() {
         <div className="max-w-4xl mx-auto">
             {/* 페이지 헤더 */}
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">새 캠페인 등록</h1>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                <h1 className="text-2xl font-bold text-gray-900 ">새 캠페인 등록</h1>
+                <p className="mt-2 text-gray-600 ">
                     새로운 체험단 캠페인을 등록하고 리뷰어를 모집하세요.
                 </p>
             </div>
@@ -1054,7 +1054,7 @@ export default function CampaignForm() {
                         className={`flex items-center justify-center w-8 h-8 rounded-full ${
                             formStep >= 1
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                : 'bg-gray-200  text-gray-700 '
                         }`}
                     >
                         1
@@ -1063,14 +1063,14 @@ export default function CampaignForm() {
                         className={`flex-1 h-1 mx-2 ${
                             formStep >= 2
                                 ? 'bg-blue-600'
-                                : 'bg-gray-200 dark:bg-gray-700'
+                                : 'bg-gray-200 '
                         }`}
                     ></div>
                     <div
                         className={`flex items-center justify-center w-8 h-8 rounded-full ${
                             formStep >= 2
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                : 'bg-gray-200  text-gray-700 '
                         }`}
                     >
                         2
@@ -1079,28 +1079,28 @@ export default function CampaignForm() {
                         className={`flex-1 h-1 mx-2 ${
                             formStep >= 3
                                 ? 'bg-blue-600'
-                                : 'bg-gray-200 dark:bg-gray-700'
+                                : 'bg-gray-200 '
                         }`}
                     ></div>
                     <div
                         className={`flex items-center justify-center w-8 h-8 rounded-full ${
                             formStep >= 3
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                : 'bg-gray-200  text-gray-700 '
                         }`}
                     >
                         3
                     </div>
                 </div>
                 <div className="flex justify-between mt-2">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">기본 정보</span>
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">리뷰어 모집 정보</span>
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">상세 정보</span>
+                    <span className="text-xs font-medium text-gray-600 ">기본 정보</span>
+                    <span className="text-xs font-medium text-gray-600 ">리뷰어 모집 정보</span>
+                    <span className="text-xs font-medium text-gray-600 ">상세 정보</span>
                 </div>
             </div>
 
             {/* 폼 */}
-            <form onSubmit={(e) => handleSubmit(e)} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <form onSubmit={(e) => handleSubmit(e)} className="bg-white  rounded-lg shadow-sm border border-gray-200  p-6">
                 {renderCurrentStep()}
 
                 {/* 단계 이동 및 제출 버튼 */}
@@ -1109,7 +1109,7 @@ export default function CampaignForm() {
                         <button
                             type="button"
                             onClick={handlePrevStep}
-                            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="px-4 py-2 border border-gray-300  rounded-lg text-gray-700  hover:bg-gray-50  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                             이전 단계
                         </button>
@@ -1123,7 +1123,7 @@ export default function CampaignForm() {
                                 type="button"
                                 onClick={(e) => handleSubmit(e, true)}
                                 disabled={isSubmitting}
-                                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                className="px-4 py-2 border border-gray-300  rounded-lg text-gray-700  hover:bg-gray-50  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 {isSubmitting ? '저장 중...' : '임시저장'}
                             </button>

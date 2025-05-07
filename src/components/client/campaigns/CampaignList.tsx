@@ -344,7 +344,7 @@ export default function CampaignList() {
             <div className="w-full py-12 flex items-center justify-center">
                 <div className="animate-pulse flex flex-col items-center">
                     <div className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">캠페인 목록을 불러오는 중...</p>
+                    <p className="mt-4 text-gray-600 ">캠페인 목록을 불러오는 중...</p>
                 </div>
             </div>
         );
@@ -354,7 +354,7 @@ export default function CampaignList() {
         <div className="space-y-6">
             {/* 페이지 헤더 */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 ">
                     캠페인 관리
                 </h1>
                 <div className="mt-4 sm:mt-0">
@@ -369,12 +369,12 @@ export default function CampaignList() {
             </div>
 
             {/* 상태 필터 탭 */}
-            <div className="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap gap-2 border-b border-gray-200 ">
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'all'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('all')}
                 >
@@ -383,8 +383,8 @@ export default function CampaignList() {
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'draft'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('draft')}
                 >
@@ -393,8 +393,8 @@ export default function CampaignList() {
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'pending'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('pending')}
                 >
@@ -403,8 +403,8 @@ export default function CampaignList() {
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'active'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('active')}
                 >
@@ -413,8 +413,8 @@ export default function CampaignList() {
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'completed'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('completed')}
                 >
@@ -423,8 +423,8 @@ export default function CampaignList() {
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
                         statusFilter === 'rejected'
-                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
+                            : 'text-gray-500  hover:text-gray-700 '
                     }`}
                     onClick={() => setStatusFilter('rejected')}
                 >
@@ -440,7 +440,7 @@ export default function CampaignList() {
                     </div>
                     <input
                         type="text"
-                        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                        className="bg-white  border border-gray-300  text-gray-900  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
                         placeholder="캠페인 검색..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -454,7 +454,7 @@ export default function CampaignList() {
                             <Filter size={18} className="text-gray-400" />
                         </div>
                         <select
-                            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
+                            className="bg-white  border border-gray-300  text-gray-900  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
                         >
@@ -488,7 +488,7 @@ export default function CampaignList() {
                             </svg>
                         </div>
                         <select
-                            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
+                            className="bg-white  border border-gray-300  text-gray-900  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
                         >
@@ -506,12 +506,12 @@ export default function CampaignList() {
             </div>
 
             {/* 캠페인 목록 테이블 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white  rounded-lg shadow-sm border border-gray-200  overflow-hidden">
                 {/* 테이블 헤더 */}
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                        <tr className="bg-gray-100 dark:bg-gray-750 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <tr className="bg-gray-100  text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                             <th className="px-6 py-3">캠페인</th>
                             <th className="px-6 py-3">상태</th>
                             <th className="px-6 py-3">카테고리</th>
@@ -521,17 +521,17 @@ export default function CampaignList() {
                             <th className="px-6 py-3">작업</th>
                         </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody className="divide-y divide-gray-200 ">
                         {currentItems.length > 0 ? (
                             currentItems.map((campaign) => (
-                                <tr key={campaign.id} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                                <tr key={campaign.id} className="hover:bg-gray-50 ">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
                                             <div>
                                                 <div className="flex items-center">
                                                     <Link
                                                         href={`/client/campaigns/${campaign.id}`}
-                                                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                                                        className="text-blue-600  hover:underline font-medium"
                                                     >
                                                         {campaign.title}
                                                     </Link>
@@ -541,7 +541,7 @@ export default function CampaignList() {
                               </span>
                                                     )}
                                                 </div>
-                                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                <div className="text-xs text-gray-500  mt-1">
                                                     ID: {campaign.id}
                                                 </div>
                                             </div>
@@ -551,19 +551,19 @@ export default function CampaignList() {
                                         <CampaignStatusBadge status={campaign.status} />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900 dark:text-gray-100">
+                      <span className="text-sm text-gray-900 ">
                         {campaign.category}
                       </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
-                                            <div className="flex items-center text-sm text-gray-900 dark:text-gray-100">
-                                                <Users size={14} className="mr-1 text-gray-500 dark:text-gray-400" />
+                                            <div className="flex items-center text-sm text-gray-900 ">
+                                                <Users size={14} className="mr-1 text-gray-500 " />
                                                 <span className="font-medium">{campaign.applicants}</span>
-                                                <span className="text-gray-500 dark:text-gray-400 mx-1">명 신청</span>
+                                                <span className="text-gray-500  mx-1">명 신청</span>
                                             </div>
                                             <div className="flex items-center mt-1">
-                                                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                                                <div className="w-full bg-gray-200  rounded-full h-1.5">
                                                     <div
                                                         className="bg-blue-600 h-1.5 rounded-full"
                                                         style={{
@@ -575,7 +575,7 @@ export default function CampaignList() {
                                                         }}
                                                     ></div>
                                                 </div>
-                                                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                                                <span className="ml-2 text-xs text-gray-500 ">
                             {campaign.completedReviews}/{campaign.selectedReviewers}
                           </span>
                                             </div>
@@ -583,8 +583,8 @@ export default function CampaignList() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
-                                            <div className="flex items-center text-sm text-gray-900 dark:text-gray-100">
-                                                <Calendar size={14} className="mr-1 text-gray-500 dark:text-gray-400" />
+                                            <div className="flex items-center text-sm text-gray-900 ">
+                                                <Calendar size={14} className="mr-1 text-gray-500 " />
                                                 <span>{formatDate(campaign.deadline)}</span>
                                             </div>
                                             <div className="mt-1">
@@ -592,10 +592,10 @@ export default function CampaignList() {
                                                     <span
                                                         className={`text-xs ${
                                                             getDaysRemaining(campaign.deadline) < 3
-                                                                ? 'text-red-500 dark:text-red-400'
+                                                                ? 'text-red-500 '
                                                                 : getDaysRemaining(campaign.deadline) < 7
-                                                                    ? 'text-amber-500 dark:text-amber-400'
-                                                                    : 'text-gray-500 dark:text-gray-400'
+                                                                    ? 'text-amber-500 '
+                                                                    : 'text-gray-500 '
                                                         }`}
                                                     >
                               <Clock size={12} className="inline mr-1" />
@@ -608,7 +608,7 @@ export default function CampaignList() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900 dark:text-gray-100">
+                      <span className="text-sm text-gray-900 ">
                         {formatCurrency(campaign.budget)}
                       </span>
                                     </td>
@@ -616,23 +616,23 @@ export default function CampaignList() {
                                         <div className="relative">
                                             <button
                                                 onClick={() => toggleDropdown(campaign.id)}
-                                                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
+                                                className="text-gray-500  hover:text-gray-700  focus:outline-none"
                                             >
                                                 <MoreHorizontal size={20} />
                                             </button>
                                             {dropdownOpen[campaign.id] && (
-                                                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700">
+                                                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white  ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 ">
                                                     <div className="py-1">
                                                         <Link
                                                             href={`/client/campaigns/${campaign.id}`}
-                                                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                            className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                         >
                                                             상세 보기
                                                         </Link>
                                                         {(campaign.status === 'draft' || campaign.status === 'rejected') && (
                                                             <Link
                                                                 href={`/client/campaigns/${campaign.id}/edit`}
-                                                                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                             >
                                                                 수정하기
                                                             </Link>
@@ -640,7 +640,7 @@ export default function CampaignList() {
                                                         {campaign.status === 'active' && (
                                                             <Link
                                                                 href={`/client/campaigns/${campaign.id}/reviewers`}
-                                                                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                             >
                                                                 리뷰어 관리
                                                             </Link>
@@ -650,12 +650,12 @@ export default function CampaignList() {
                                                         {campaign.status === 'draft' && (
                                                             <>
                                                                 <button
-                                                                    className="block w-full text-left px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                    className="block w-full text-left px-4 py-2 text-sm text-blue-600  hover:bg-gray-100 "
                                                                 >
                                                                     제출하기
                                                                 </button>
                                                                 <button
-                                                                    className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                    className="block w-full text-left px-4 py-2 text-sm text-red-600  hover:bg-gray-100 "
                                                                 >
                                                                     삭제하기
                                                                 </button>
@@ -663,21 +663,21 @@ export default function CampaignList() {
                                                         )}
                                                         {campaign.status === 'pending' && (
                                                             <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                             >
                                                                 검토 요청
                                                             </button>
                                                         )}
                                                         {campaign.status === 'active' && (
                                                             <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-amber-600 dark:text-amber-400 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                className="block w-full text-left px-4 py-2 text-sm text-amber-600  hover:bg-gray-100 "
                                                             >
                                                                 마감하기
                                                             </button>
                                                         )}
                                                         {campaign.status === 'completed' && (
                                                             <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750"
+                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
                                                             >
                                                                 보고서 다운로드
                                                             </button>
@@ -694,10 +694,10 @@ export default function CampaignList() {
                                 <td colSpan={7} className="px-6 py-12 text-center">
                                     <div className="flex flex-col items-center">
                                         <AlertCircle size={32} className="text-gray-400 mb-4" />
-                                        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
+                                        <p className="text-gray-500  text-lg font-medium">
                                             캠페인이 없습니다
                                         </p>
-                                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                                        <p className="text-gray-500  mt-1">
                                             {searchQuery
                                                 ? '검색 조건에 맞는 캠페인이 없습니다. 다른 검색어를 입력해보세요.'
                                                 : statusFilter !== 'all'
@@ -723,10 +723,10 @@ export default function CampaignList() {
 
                 {/* 페이지네이션 */}
                 {filteredCampaigns.length > itemsPerPage && (
-                    <div className="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                    <div className="px-6 py-4 bg-white  border-t border-gray-200 ">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300">
+                                <p className="text-sm text-gray-700 ">
                                     <span className="font-medium">{indexOfFirstItem + 1}</span>
                                     -
                                     <span className="font-medium">
@@ -743,7 +743,7 @@ export default function CampaignList() {
                                     className={`px-2 py-1 text-sm rounded-md ${
                                         currentPage === 1
                                             ? 'text-gray-400 cursor-not-allowed'
-                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                            : 'text-gray-700  hover:bg-gray-100 '
                                     }`}
                                 >
                                     <svg
@@ -775,7 +775,7 @@ export default function CampaignList() {
                                                 className={`px-3 py-1 text-sm rounded-md ${
                                                     currentPage === pageNumber
                                                         ? 'bg-blue-600 text-white'
-                                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                                        : 'text-gray-700  hover:bg-gray-100 '
                                                 }`}
                                             >
                                                 {pageNumber}
@@ -791,7 +791,7 @@ export default function CampaignList() {
                                         return (
                                             <span
                                                 key={index}
-                                                className="px-2 py-1 text-sm text-gray-500 dark:text-gray-400"
+                                                className="px-2 py-1 text-sm text-gray-500 "
                                             >
                         ...
                       </span>
@@ -806,7 +806,7 @@ export default function CampaignList() {
                                     className={`px-2 py-1 text-sm rounded-md ${
                                         currentPage === totalPages
                                             ? 'text-gray-400 cursor-not-allowed'
-                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                            : 'text-gray-700  hover:bg-gray-100 '
                                     }`}
                                 >
                                     <svg

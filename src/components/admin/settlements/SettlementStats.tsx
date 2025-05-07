@@ -25,14 +25,14 @@ export default function SettlementStats() {
                 <Card key={index}>
                     <CardContent className="p-6 flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{stat.title}</p>
+                            <p className="text-sm text-gray-500 ">{stat.title}</p>
                             <h3 className="text-2xl font-bold">
                                 {stat.format === 'currency'
                                     ? `${stat.value.toLocaleString()}원`
                                     : stat.value.toLocaleString()}
                             </h3>
                         </div>
-                        <div className={`rounded-full p-3 bg-gray-100 dark:bg-gray-700 ${stat.color}`}>
+                        <div className={`rounded-full p-3 bg-gray-100  ${stat.color}`}>
                             <stat.icon className="w-6 h-6" />
                         </div>
                     </CardContent>

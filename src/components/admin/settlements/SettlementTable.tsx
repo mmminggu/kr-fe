@@ -29,10 +29,10 @@ import {Pagination} from '@/src/components/ui/pagination';
 
 // 정산 상태별 배지 스타일
 const statusStyles = {
-    completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-    processing: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    completed: 'bg-green-100 text-green-800  ,
+    pending: 'bg-yellow-100 text-yellow-800  ,
+    rejected: 'bg-red-100 text-red-800  ,
+    processing: 'bg-blue-100 text-blue-800  ,
 };
 
 // 임시 데이터
@@ -143,7 +143,7 @@ export default function SettlementTable({ filterOptions }) {
             </Table>
 
             <div className="mt-4 flex justify-between items-center">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-500 ">
                     총 {filteredSettlements.length}건의 정산 중 {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredSettlements.length)}건 표시
                 </div>
                 <Pagination

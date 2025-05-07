@@ -32,19 +32,19 @@ import Image from 'next/image';
 // src/components/admin/shops/ShopTable.tsx (계속)
 // 쇼핑몰 상태별 배지 스타일
 const statusStyles = {
-    active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-    inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-    suspended: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    active: 'bg-green-100 text-green-800  ',
+    inactive: 'bg-gray-100 text-gray-800  ',
+    pending: 'bg-yellow-100 text-yellow-800  ',
+    suspended: 'bg-red-100 text-red-800  ',
 };
 
 // 쇼핑몰 카테고리별 배지 스타일
 const categoryStyles = {
-    fashion: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
-    beauty: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300',
-    food: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
-    electronics: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    home: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300',
+    fashion: 'bg-purple-100 text-purple-800  ',
+    beauty: 'bg-pink-100 text-pink-800  ',
+    food: 'bg-orange-100 text-orange-800  ',
+    electronics: 'bg-blue-100 text-blue-800  ',
+    home: 'bg-teal-100 text-teal-800  ',
 };
 
 // 임시 데이터
@@ -171,7 +171,7 @@ export default function ShopTable({ filterOptions }) {
             </Table>
 
             <div className="mt-4 flex justify-between items-center">
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-500 ">
                     총 {filteredShops.length}개의 쇼핑몰 중 {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredShops.length)}개 표시
                 </div>
                 <Pagination

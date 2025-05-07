@@ -145,15 +145,15 @@ export default function Dashboard() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'active':
-                return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+                return 'bg-green-100 text-green-800  ';
             case 'pending':
-                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+                return 'bg-yellow-100 text-yellow-800  ';
             case 'completed':
-                return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
+                return 'bg-blue-100 text-blue-800  ';
             case 'rejected':
-                return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+                return 'bg-red-100 text-red-800  ';
             default:
-                return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300';
+                return 'bg-gray-100 text-gray-800  ';
         }
     };
 
@@ -161,13 +161,13 @@ export default function Dashboard() {
     const getReviewStatusColor = (status: string) => {
         switch (status) {
             case 'approved':
-                return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+                return 'bg-green-100 text-green-800  ';
             case 'pending':
-                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+                return 'bg-yellow-100 text-yellow-800  ';
             case 'rejected':
-                return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+                return 'bg-red-100 text-red-800  ';
             default:
-                return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300';
+                return 'bg-gray-100 text-gray-800  ';
         }
     };
 
@@ -195,7 +195,7 @@ export default function Dashboard() {
             <div className="w-full h-96 flex items-center justify-center">
                 <div className="animate-pulse flex flex-col items-center">
                     <div className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">로딩 중...</p>
+                    <p className="mt-4 text-gray-600 ">로딩 중...</p>
                 </div>
             </div>
         );
@@ -205,10 +205,10 @@ export default function Dashboard() {
         <div className="space-y-6">
             {/* 페이지 제목 */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 ">
                     클라이언트 대시보드
                 </h1>
-                <div className="mt-2 md:mt-0 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="mt-2 md:mt-0 flex items-center gap-2 text-sm text-gray-500 ">
                     <Clock size={16} />
                     <span>
             {new Date().toLocaleDateString('ko-KR', {
@@ -225,8 +225,8 @@ export default function Dashboard() {
             <StatsCards stats={data.stats} />
 
             {/* 활동 차트 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 md:p-6">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <div className="bg-white  rounded-lg shadow-sm border border-gray-200  p-4 md:p-6">
+                <h2 className="text-lg font-medium text-gray-900  mb-4">
                     캠페인 활동 추이
                 </h2>
                 <div className="h-80">
@@ -237,14 +237,14 @@ export default function Dashboard() {
             {/* 그리드 레이아웃 - 캠페인, 리뷰, 공지사항 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* 진행 중인 캠페인 */}
-                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div className="px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                <div className="lg:col-span-2 bg-white  rounded-lg shadow-sm border border-gray-200  overflow-hidden">
+                    <div className="px-4 md:px-6 py-4 border-b border-gray-200  flex items-center justify-between">
+                        <h2 className="text-lg font-medium text-gray-900 ">
                             진행 중인 캠페인
                         </h2>
                         <Link
                             href="/client/campaigns"
-                            className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                            className="text-sm text-blue-600  hover:underline"
                         >
                             모두 보기
                         </Link>
@@ -252,42 +252,42 @@ export default function Dashboard() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                            <tr className="bg-gray-50 dark:bg-gray-750">
-                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr className="bg-gray-50 ">
+                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                     캠페인명
                                 </th>
-                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                     신청자 수
                                 </th>
-                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                     진행 상황
                                 </th>
-                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500  uppercase tracking-wider">
                                     마감일
                                 </th>
                             </tr>
                             </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody className="bg-white  divide-y divide-gray-200 ">
                             {data.recentCampaigns.map((campaign) => (
                                 <tr
                                     key={campaign.id}
-                                    className="hover:bg-gray-50 dark:hover:bg-gray-750"
+                                    className="hover:bg-gray-50 "
                                 >
                                     <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                                         <Link
                                             href={`/client/campaigns/${campaign.id}`}
-                                            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                                            className="text-blue-600  hover:underline font-medium"
                                         >
                                             {campaign.title}
                                         </Link>
                                     </td>
                                     <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm">
                                         <span className="font-medium">{campaign.applicants}</span>
-                                        <span className="text-gray-500 dark:text-gray-400">명</span>
+                                        <span className="text-gray-500 ">명</span>
                                     </td>
                                     <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm">
                                         <div className="flex items-center">
-                                            <div className="relative w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div className="relative w-full h-2 bg-gray-200  rounded-full">
                                                 <div
                                                     className="absolute top-0 left-0 h-2 bg-blue-500 rounded-full"
                                                     style={{
@@ -305,8 +305,8 @@ export default function Dashboard() {
                                             <span>{formatDate(campaign.deadline)}</span>
                                             <span className={`text-xs ${
                                                 getDaysRemaining(campaign.deadline) < 3
-                                                    ? 'text-red-500 dark:text-red-400'
-                                                    : 'text-gray-500 dark:text-gray-400'
+                                                    ? 'text-red-500 '
+                                                    : 'text-gray-500 '
                                             }`}>
                           {getDaysRemaining(campaign.deadline)}일 남음
                         </span>
@@ -322,9 +322,9 @@ export default function Dashboard() {
                 {/* 공지사항 및 최신 리뷰 (모바일에서는 순서 변경) */}
                 <div className="lg:col-span-1 flex flex-col gap-6">
                     {/* 공지사항 */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                        <div className="px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                    <div className="bg-white  rounded-lg shadow-sm border border-gray-200  overflow-hidden">
+                        <div className="px-4 md:px-6 py-4 border-b border-gray-200  flex items-center justify-between">
+                            <h2 className="text-lg font-medium text-gray-900 ">
                 <span className="flex items-center">
                   <AlertCircle size={18} className="mr-2 text-amber-500" />
                   공지사항
@@ -332,7 +332,7 @@ export default function Dashboard() {
                             </h2>
                             <Link
                                 href="/client/notices"
-                                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                className="text-sm text-blue-600  hover:underline"
                             >
                                 모두 보기
                             </Link>
@@ -343,12 +343,12 @@ export default function Dashboard() {
                                     <li key={notice.id}>
                                         <Link
                                             href={`/client/notices/${notice.id}`}
-                                            className="block p-3 hover:bg-gray-50 dark:hover:bg-gray-750 rounded-lg transition-colors"
+                                            className="block p-3 hover:bg-gray-50  rounded-lg transition-colors"
                                         >
-                                            <p className="font-medium text-gray-900 dark:text-white mb-1">
+                                            <p className="font-medium text-gray-900  mb-1">
                                                 {notice.title}
                                             </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            <p className="text-xs text-gray-500 ">
                                                 {formatDate(notice.date)}
                                             </p>
                                         </Link>
@@ -359,28 +359,28 @@ export default function Dashboard() {
                     </div>
 
                     {/* 최근 리뷰 */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                        <div className="px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                    <div className="bg-white  rounded-lg shadow-sm border border-gray-200  overflow-hidden">
+                        <div className="px-4 md:px-6 py-4 border-b border-gray-200  flex items-center justify-between">
+                            <h2 className="text-lg font-medium text-gray-900 ">
                                 최근 리뷰
                             </h2>
                             <Link
                                 href="/client/reviews"
-                                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                                className="text-sm text-blue-600  hover:underline"
                             >
                                 모두 보기
                             </Link>
                         </div>
                         <div className="overflow-hidden">
-                            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                            <ul className="divide-y divide-gray-200 ">
                                 {data.recentReviews.slice(0, 3).map((review) => (
-                                    <li key={review.id} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                                    <li key={review.id} className="hover:bg-gray-50 ">
                                         <Link
                                             href={`/client/reviews/${review.id}`}
                                             className="block p-4 md:p-6"
                                         >
                                             <div className="flex justify-between items-start mb-2">
-                                                <p className="font-medium text-gray-900 dark:text-white">
+                                                <p className="font-medium text-gray-900 ">
                                                     {review.reviewer}
                                                 </p>
                                                 <span className={`text-xs px-2 py-1 rounded-full ${getReviewStatusColor(review.status)}`}>
@@ -389,7 +389,7 @@ export default function Dashboard() {
                                                     {review.status === 'rejected' && '반려됨'}
                         </span>
                                             </div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                                            <p className="text-sm text-gray-600  mb-1">
                                                 {review.campaign}
                                             </p>
                                             <div className="flex items-center justify-between mt-2">
@@ -403,7 +403,7 @@ export default function Dashboard() {
                                                                         ? 'text-yellow-400'
                                                                         : i < review.rating
                                                                             ? 'text-yellow-400'
-                                                                            : 'text-gray-300 dark:text-gray-600'
+                                                                            : 'text-gray-300 '
                                                                 }`}
                                                                 aria-hidden="true"
                                                                 xmlns="http://www.w3.org/2000/svg"
@@ -414,15 +414,15 @@ export default function Dashboard() {
                                                             </svg>
                                                         ))}
                                                     </div>
-                                                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                                                    <span className="ml-1 text-xs text-gray-500 ">
                             {review.rating.toFixed(1)}
                           </span>
                                                 </div>
-                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                <span className="text-xs text-gray-500 ">
                           {formatDate(review.date)}
                         </span>
                                             </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            <p className="text-xs text-gray-500  mt-1">
                                                 {review.platform}
                                             </p>
                                         </Link>

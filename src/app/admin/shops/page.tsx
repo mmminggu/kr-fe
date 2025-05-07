@@ -26,7 +26,7 @@ export default function ShopsPage() {
 
                 <ShopStats />
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <ShopFilter
                         filterOptions={filterOptions}
                         setFilterOptions={setFilterOptions}

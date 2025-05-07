@@ -109,14 +109,14 @@ export default function ClientSidebar() {
             {/* 사이드바 */}
             <aside
                 className={`
-          fixed md:sticky top-0 left-0 z-30 h-screen w-64 bg-white dark:bg-gray-800 shadow-lg transform 
+          fixed md:sticky top-0 left-0 z-30 h-screen w-64 bg-white  shadow-lg transform 
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
           transition-transform duration-300 ease-in-out
           flex flex-col overflow-y-auto
         `}
             >
                 {/* 로고 영역 */}
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="px-6 py-4 border-b border-gray-200 ">
                     <Link
                         href="/client"
                         className="flex items-center justify-center md:justify-start"
@@ -124,7 +124,7 @@ export default function ClientSidebar() {
                         <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center mr-2">
                             <span className="text-white font-bold">R</span>
                         </div>
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">리뷰어 체험단</h1>
+                        <h1 className="text-xl font-bold text-gray-900 ">리뷰어 체험단</h1>
                     </Link>
                 </div>
 
@@ -139,8 +139,8 @@ export default function ClientSidebar() {
                                             className={`
                         flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm
                         ${isActive(item.href)
-                                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium'
-                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                                ? 'bg-blue-50  text-blue-700  font-medium'
+                                                : 'text-gray-700  hover:bg-gray-100 '
                                             }
                       `}
                                             onClick={() => toggleSubmenu(item.name)}
@@ -165,8 +165,8 @@ export default function ClientSidebar() {
                                                             className={`
                                 block px-3 py-2 rounded-lg text-sm
                                 ${isActive(subitem.href)
-                                                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium'
-                                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                                                ? 'bg-blue-50  text-blue-700  font-medium'
+                                                                : 'text-gray-700  hover:bg-gray-100 '
                                                             }
                               `}
                                                         >
@@ -183,8 +183,8 @@ export default function ClientSidebar() {
                                         className={`
                       flex items-center px-3 py-2 rounded-lg text-sm
                       ${isActive(item.href)
-                                            ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium'
-                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                                            ? 'bg-blue-50  text-blue-700  font-medium'
+                                            : 'text-gray-700  hover:bg-gray-100 '
                                         }
                     `}
                                     >
@@ -198,9 +198,9 @@ export default function ClientSidebar() {
                 </nav>
 
                 {/* 사이드바 하단 영역 */}
-                <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="px-4 py-4 border-t border-gray-200 ">
                     <button
-                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-750 rounded-lg"
+                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-gray-100  rounded-lg"
                     >
                         <LogOut size={20} className="mr-3" />
                         <span>로그아웃</span>

@@ -85,9 +85,9 @@ export default function ActivityChart() {
         return (
             <div
                 ref={chartContainerRef}
-                className="h-80 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded"
+                className="h-80 flex items-center justify-center bg-gray-50  rounded"
             >
-                <div className="text-gray-400 dark:text-gray-500">차트 로딩 중...</div>
+                <div className="text-gray-400 ">차트 로딩 중...</div>
             </div>
         );
     }

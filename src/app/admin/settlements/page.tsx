@@ -31,7 +31,7 @@ export default function SettlementsPage() {
 
                 <SettlementStats />
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <SettlementFilter
                         filterOptions={filterOptions}
                         setFilterOptions={setFilterOptions}
