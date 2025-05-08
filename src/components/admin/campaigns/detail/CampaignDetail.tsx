@@ -4,7 +4,7 @@ import { Progress } from '@/src/components/ui/progress';
 import CampaignInfoCard from '@/src/components/admin/campaigns/detail/CampaignInfo';
 import { OptionItem } from '@/src/components/admin/campaigns/detail/OptionTable';
 import { RecruitmentDay } from '@/src/components/admin/campaigns/detail/RecruitmentTable';
-
+import clsx from 'clsx';
 
 interface Campaign {
     id: number;
@@ -17,10 +17,10 @@ interface Campaign {
 }
 
 import {
-    Star, TrendingUp, CircleX, AlertCircle, Users, Gift, UserPlus,
+    Star, TrendingUp, PlusCircle, Users, FilePlus2, UserPlus,
     Clock, ReceiptText, Sparkles, PieChart, MessageCircle,
-    CalendarDays, Bell, FileCheck, Briefcase, ChevronRight,
-    Check, X, Pause, Play, Download, Filter, Pencil, Trash2, Settings, Save, Package
+    CalendarDays, Bell, Search, RefreshCw, ChevronRight,
+    Calendar, BadgeCheck, Pause, Play, Download, Filter, Pencil, Trash2, Settings, Save, Package
 } from 'lucide-react';
 
 export default function CampaignDetailPage() {
@@ -81,6 +81,28 @@ export default function CampaignDetailPage() {
             rejected: 0
         }
     });
+
+    const [activePeriod, setActivePeriod] = useState('1m');  // 활성화된 기간 ('1m', '3m', '6m', 'custom')
+    const [dateRange, setDateRange] = useState([new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()]); // [시작일, 종료일]
+    const [statusFilter, setStatusFilter] = useState('');  // 상태 필터
+    const [searchText, setSearchText] = useState('');  // 검색어
+
+    // 날짜 포맷 헬퍼 함수
+    const formatDateYYYY_MM_DD = (date) => {
+        return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+    };
+
+    // 검색 핸들러
+    const handleSearch = () => {
+        // 검색 로직 구현
+        console.log('검색:', {
+            기간: activePeriod,
+            시작일: formatDate(dateRange[0]),
+            종료일: formatDate(dateRange[1]),
+            상태: statusFilter,
+            검색어: searchText
+        });
+    };
 
     const handleStatusChange = (newStatus) => {
         setCampaign({...campaign, status: newStatus});
@@ -192,10 +214,16 @@ export default function CampaignDetailPage() {
             </div>
 
             {/* 대시보드 요약 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 pt-[90px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-6 pt-[90px]">
             <StatCard
-                title="총 진행률"
-                value="62%"
+                title="오늘 신청 수"
+                value="5건"
+                icon={<FilePlus2 size={20} />}
+                color="orange"
+            />
+            <StatCard
+                title="오늘 모집률"
+                value="50%"
                 icon={<TrendingUp size={20} />}
                 color="blue"
             />
@@ -224,153 +252,124 @@ export default function CampaignDetailPage() {
 
             {/* 증빙 목록 탭 */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-                <div className="flex border-b border-gray-200">
+                <div className="px-6 pt-6">
+                    <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-4">
+                        <ReceiptText className="w-5 h-5 mr-2 text-indigo-600" />
+                        증빙 목록
+                    </h2>
+                </div>
+                <div className="flex bg-white rounded-t-lg overflow-hidden px-6">
                     <button
-                        className={`flex-1 py-3 px-4 text-sm font-medium ${activeTab === 'receipt' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
-                        onClick={() => setActiveTab('receipt')}>
+                        className={clsx(
+                            'flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors',
+                            activeTab === 'receipt'
+                                ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        )}
+                        onClick={() => setActiveTab('receipt')}
+                    >
                         구매 영수증 증빙
                     </button>
                     <button
-                        className={`flex-1 py-3 px-4 text-sm font-medium ${activeTab === 'review' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
-                        onClick={() => setActiveTab('review')}>
+                        className={clsx(
+                            'flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors',
+                            activeTab === 'review'
+                                ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        )}
+                        onClick={() => setActiveTab('review')}
+                    >
                         리뷰 증빙
                     </button>
                 </div>
 
-                <div className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            {activeTab === 'receipt' ? '구매 영수증 증빙 목록' : '리뷰 증빙 목록'}
-                        </h3>
-
-                        <div className="flex items-center space-x-2">
-                            <button
-                                className="text-sm text-gray-600 flex items-center bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-lg">
-                                <Filter className="w-4 h-4 mr-1"/> 필터
-                            </button>
-                            <span className="text-sm text-gray-500">
-                {activeTab === 'receipt'
-                    ? `대기: ${campaign.receiptProofs.waiting}건`
-                    : `대기: ${campaign.reviewProofs.waiting}건`}
-              </span>
-                        </div>
-                    </div>
-
-                    {/* 증빙 목록 테이블 */}
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full">
-                            <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">회원</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">날짜</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    {activeTab === 'receipt' ? '이미지' : '플랫폼'}
-                                </th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">액션</th>
-                            </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                            {activeTab === 'receipt' ? (
-                                receiptProofs.map((proof) => (
-                                    <tr key={proof.id} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{proof.user}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{proof.date}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                        <span
-                            className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-amber-100 text-amber-800">
-                          {proof.status}
-                        </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-blue-600 hover:underline">
-                                            이미지 보기
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-green-600 hover:text-green-900 mr-3">승인</button>
-                                            <button className="text-red-600 hover:text-red-900">반려</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                reviewProofs.map((proof) => (
-                                    <tr key={proof.id} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{proof.user}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{proof.date}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                        <span
-                            className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-amber-100 text-amber-800">
-                          {proof.status}
-                        </span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{proof.platform}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-green-600 hover:text-green-900 mr-3">승인</button>
-                                            <button className="text-red-600 hover:text-red-900">반려</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            {/* 예약자 리스트 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                            <Users className="w-5 h-5 mr-2 text-indigo-600"/>
-                            예약자 리스트
-                        </h2>
-
-                        <div className="flex items-center space-x-2">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="검색"
-                                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                                <div className="absolute left-3 top-3 text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                    </svg>
-                                </div>
+                <div className="px-6 pb-6 border rounded-xl mx-6 mb-6">
+                    {/* 필터 영역 */}
+                    <div className="py-4">
+                        <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+                            {/* 상태 필터 */}
+                            <div className="flex items-center whitespace-nowrap">
+                                <select
+                                    className="h-9 bg-white border border-gray-300 text-gray-700 text-sm rounded-md px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-24"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                >
+                                    <option value="">전체</option>
+                                    <option value="pending">대기중</option>
+                                    <option value="approved">승인됨</option>
+                                    <option value="rejected">반려됨</option>
+                                </select>
                             </div>
 
-                            <button
-                                className="text-sm text-gray-600 flex items-center bg-gray-100 hover:bg-gray-200 py-2 px-3 rounded-lg">
-                                <Filter className="w-4 h-4 mr-1"/> 필터
-                            </button>
+                            {/* 검색 필드 */}
+                            <div className="flex items-center gap-2">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="회원명 검색"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
+                                        className="h-9 w-[500px] px-2 pl-7 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
+                                </div>
+                                {/* 검색 버튼 */}
+                                <button
+                                    className="h-9 px-3 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors shadow-sm whitespace-nowrap flex items-center"
+                                    onClick={handleSearch}
+                                >
+                                    검색
+                                </button>
+                                {/* 초기화 버튼 */}
+                                <button
+                                    className="h-9 px-3 border border-gray-300 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap"
+                                    onClick={() => {
+                                        setActivePeriod('1m');
+                                        const endDate = new Date();
+                                        const startDate = new Date();
+                                        startDate.setMonth(startDate.getMonth() - 1);
+                                        setDateRange([startDate, endDate]);
+                                        setStatusFilter('');
+                                        setSearchText('');
+                                    }}
+                                >
+                                    <RefreshCw className="w-3 h-3 mr-1" />
+                                    초기화
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* 예약자 테이블 */}
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full">
-                            <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이름</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이메일</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">연락처</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">옵션</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">예약일</th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">액션</th>
+                    {/* 테이블 구조 - OptionTable과 동일한 스타일 적용 */}
+                    <div className="rounded-xl overflow-hidden border border-gray-200">
+                        <table className="w-full table-fixed text-sm text-gray-900 border-collapse">
+                            <thead className="bg-gray-100 text-xs font-semibold text-gray-600 sticky top-0 z-10">
+                            <tr className="border-b">
+                                <th className="px-4 py-2 text-left w-[30%]">회원</th>
+                                <th className="px-4 py-2 text-left w-[20%]">날짜</th>
+                                <th className="px-4 py-2 text-left w-[15%]">상태</th>
+                                <th className="px-4 py-2 text-left w-[20%]">
+                                    {activeTab === 'receipt' ? '이미지' : '플랫폼'}
+                                </th>
+                                <th className="px-4 py-2 text-right w-[15%]">액션</th>
                             </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                            {reservations.map((reservation) => (
-                                <tr key={reservation.id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{reservation.name}</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{reservation.email}</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{reservation.phone}</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{reservation.option}</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{reservation.date}</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                        <button className="text-indigo-600 hover:text-indigo-900">상세보기</button>
+                            <tbody>
+                            {(activeTab === 'receipt' ? receiptProofs : reviewProofs).map((proof) => (
+                                <tr key={proof.id} className="hover:bg-gray-50 border-b">
+                                    <td className="px-4 py-3 text-left">{proof.user}</td>
+                                    <td className="px-4 py-3 text-left">{proof.date}</td>
+                                    <td className="px-4 py-3 text-left">
+                                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-amber-100 text-amber-800">
+                                        {proof.status}
+                                      </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-left text-blue-600 hover:underline">
+                                        {activeTab === 'receipt' ? '이미지 보기' : proof.platform}
+                                    </td>
+                                    <td className="px-4 py-3 text-right space-x-2">
+                                        <button className="text-green-600 hover:text-green-900 mr-3">승인</button>
+                                        <button className="text-red-600 hover:text-red-900">반려</button>
                                     </td>
                                 </tr>
                             ))}
@@ -378,24 +377,133 @@ export default function CampaignDetailPage() {
                         </table>
                     </div>
 
-                    {/* 페이지네이션 */}
-                    <div className="flex items-center justify-between mt-4">
-                        <div className="text-sm text-gray-500">
-                            총 <span className="font-medium">{reservations.length}</span>명
+                    {/* 페이지네이션*/}
+                    <div className="flex items-center justify-center mt-4">
+                        <div className="flex space-x-1">
+                            <button className="px-3 py-2 border border-gray-300 bg-indigo-600 text-sm font-medium rounded-md text-white hover:bg-indigo-700">
+                                1
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* 예약자 리스트 */}
+            <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+                <div className="p-5">
+                    <div className="flex justify-between items-center mb-5">
+                        <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                            <Users className="w-5 h-5 mr-2 text-blue-600"/>
+                            예약자 리스트
+                        </h2>
+                    </div>
+
+                    {/* 필터 영역 */}
+                    <div className="mb-6 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* 상태 필터 */}
+                            <div className="flex items-center whitespace-nowrap">
+                                <select
+                                    className="h-10 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 w-28 shadow-sm"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                >
+                                    <option value="name">이름</option>
+                                    <option value="pending">이메일</option>
+                                </select>
+                            </div>
+
+                            {/* 검색 필드 */}
+                            <div className="flex-1 flex items-center gap-2">
+                                <div className="relative flex-1 max-w-2xl">
+                                    <input
+                                        type="text"
+                                        placeholder="검색어를 입력하세요"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
+                                        className="h-10 w-full px-3 pl-9 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                    />
+                                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                </div>
+
+                                {/* 검색 버튼 */}
+                                <button
+                                    className="h-10 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm whitespace-nowrap flex items-center"
+                                    onClick={handleSearch}
+                                >
+                                    검색
+                                </button>
+
+                                {/* 초기화 버튼 */}
+                                <button
+                                    className="h-10 px-4 border border-gray-200 bg-white text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all duration-200 flex items-center whitespace-nowrap shadow-sm"
+                                    onClick={() => {
+                                        setActivePeriod('1m');
+                                        const endDate = new Date();
+                                        const startDate = new Date();
+                                        startDate.setMonth(startDate.getMonth() - 1);
+                                        setDateRange([startDate, endDate]);
+                                        setStatusFilter('');
+                                        setSearchText('');
+                                    }}
+                                >
+                                    <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                                    초기화
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 예약자 테이블 */}
+                    <div className="overflow-hidden rounded-lg border border-gray-100 shadow-sm">
+                        <div className="overflow-x-auto">
+                            <table className="w-full table-auto text-sm text-gray-800 border-collapse">
+                                <thead>
+                                <tr className="bg-gradient-to-r from-gray-50 to-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">이름</th>
+                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">이메일</th>
+                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">연락처</th>
+                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">옵션</th>
+                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">예약일</th>
+                                    <th className="px-4 py-3.5 text-right border-b border-gray-200">액션</th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                {reservations.map((reservation) => (
+                                    <tr key={reservation.id} className="hover:bg-blue-50 transition-colors duration-150">
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm font-medium text-gray-800">{reservation.name}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.email}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.phone}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.option}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.date}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap text-right text-sm font-medium">
+                                            <button className="text-blue-600 hover:text-blue-800 transition-colors px-3 py-1.5 rounded-md hover:bg-blue-50">상세보기</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div className="flex items-center space-x-2">
-                            <button
-                                className="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50">이전
-                            </button>
-                            <button className="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm">1</button>
-                            <button className="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50">2
-                            </button>
-                            <button className="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50">3
-                            </button>
-                            <button
-                                className="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50">다음
-                            </button>
+                        {/* 페이지네이션 */}
+                        <div className="flex items-center justify-center p-4 border-t border-gray-100 bg-gray-50">
+                            <div className="flex space-x-1">
+                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
+                                    이전
+                                </button>
+                                <button className="px-3 py-1.5 border border-transparent bg-blue-600 text-sm font-medium rounded-md text-white hover:bg-blue-700 transition-colors">
+                                    1
+                                </button>
+                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
+                                    2
+                                </button>
+                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
+                                    3
+                                </button>
+                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
+                                    다음
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -410,6 +518,7 @@ function StatCard({ title, value, icon, color }: { title: string; value: string;
     const colorVariants = {
         blue: "bg-blue-100 text-blue-700",
         green: "bg-green-100 text-green-700",
+        orange: "bg-orange-100 text-orange-700",
         yellow: "bg-yellow-100 text-yellow-700",
         purple: "bg-purple-100 text-purple-700",
         red: "bg-red-100 text-red-700",

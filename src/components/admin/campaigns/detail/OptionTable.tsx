@@ -180,32 +180,8 @@ export default function OptionTable({ initialOptions }: { initialOptions: Option
     };
 
     return (
-        <section className="mt-6">
-            {/*<div className="flex justify-end gap-2 mb-2">
-                {isEditMode && (
-                    <button
-                        onClick={addNewRow}
-                        className="p-2 border border-gray-300 rounded-md hover:bg-gray-100"
-                        aria-label="옵션 추가"
-                    >
-                        <Plus size={16} className="text-gray-600" />
-                    </button>
-                )}
-                <button onClick={toggleEditMode} className="p-2 border border-gray-300 rounded-md hover:bg-gray-100" aria-label="수정 모드">
-                    <Pencil size={16} className="text-gray-600" />
-                </button>
-                {isEditMode && (
-                    <>
-                        <button onClick={saveAllEdits} className="p-2 border border-green-500 rounded-md hover:bg-green-100" aria-label="저장">
-                            <Check size={16} className="text-green-600" />
-                        </button>
-                        <button onClick={cancelEdit} className="p-2 border border-red-400 rounded-md hover:bg-red-100" aria-label="취소">
-                            <X size={16} className="text-red-600" />
-                        </button>
-                    </>
-                )}
-            </div>*/}
-
+        <section className="">
+            <p className="text-sm text-gray-500 mb-4">캠페인에 노출할 제품 옵션을 등록하거나 수정할 수 있습니다.</p>
             <div className="rounded-xl overflow-hidden border border-gray-200">
                 <div className="max-h-[250px] overflow-y-auto">
                     <table className="w-full table-fixed text-sm text-gray-900 border-collapse">

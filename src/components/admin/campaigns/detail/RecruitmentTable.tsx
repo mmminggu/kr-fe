@@ -202,7 +202,8 @@ export default function RecruitmentTable({ initialDays }: { initialDays: Recruit
     };
 
     return (
-        <section className="mt-6">
+        <section className="">
+            <p className="text-sm text-gray-500 mb-4">날짜별로 모집 인원을 등록하거나 수정할 수 있습니다.</p>
             <div className="rounded-xl overflow-hidden border border-gray-200">
                 <div className="max-h-[250px] overflow-y-auto">
                     <table className="w-full table-fixed text-sm text-gray-900 border-collapse">

@@ -35,33 +35,31 @@ const TabView = ({ options, recruitmentData }: { options: OptionItem[], recruitm
     const [activeTab, setActiveTab] = useState<'option' | 'recruit' | 'settings'>('option');
 
     return (
-        <div className="mt-6">
-            <div className="flex border-b mb-6 bg-white rounded-t-lg overflow-hidden">
+        <div className="mt-5">
+            <div className="flex bg-white rounded-t-lg overflow-hidden">
                 <button
-                    className={`flex items-center px-4 py-3 text-sm font-medium transition-colors ${
+                    className={`flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors ${
                         activeTab === 'option'
                             ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                     onClick={() => setActiveTab('option')}
                 >
-                    <CircleUser size={18} className="mr-2" />
                     옵션 관리
                 </button>
                 <button
-                    className={`flex items-center px-4 py-3 text-sm font-medium transition-colors ${
+                    className={`flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors ${
                         activeTab === 'recruit'
                             ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                     onClick={() => setActiveTab('recruit')}
                 >
-                    <Calendar size={18} className="mr-2" />
                     모집일 관리
                 </button>
             </div>
 
-            <div className="">
+            <div className="p-5 border rounded-lg">
                 {activeTab === 'option' && <OptionTable initialOptions={options} />}
                 {activeTab === 'recruit' && <RecruitmentTable initialDays={recruitmentData} />}
             </div>
@@ -115,67 +113,6 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             {/* 상단: 캠페인명 + 날짜 + 상태 뱃지 + 버튼 */}
-            {/*<div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-4">
-                <div>
-                    <div className="flex items-center mt-2">
-                        <span className={`mb-1 inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium
-                            ${campaignStatus === '진행 중' ? 'bg-emerald-100 text-emerald-800 '
-                            : campaignStatus === '예정' ? 'bg-blue-100 text-blue-800'
-                                : campaignStatus === '중단' ? 'bg-rose-100 text-rose-800'
-                                    : 'bg-gray-100 text-gray-800'}`}
-                        >
-                            {campaignStatus === '진행 중' && <Clock className="w-3 h-3 mr-1" />}
-                            {campaignStatus === '예정' && <CalendarDays className="w-3 h-3 mr-1" />}
-                            {campaignStatus === '종료' && <BadgeCheck className="w-3 h-3 mr-1" />}
-                            {campaignStatus === '중단' && <Pause className="w-3 h-3 mr-1" />}
-                            {campaignStatus}
-                        </span>
-                    </div>
-                    <h1 className="text-xl font-bold text-gray-900 flex items-center">
-                        {campaign.title}
-                    </h1>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={toggleStatus}
-                        className={`text-sm px-4 py-2 rounded-md text-white flex items-center gap-1.5
-                         ${campaignStatus === '진행 중'
-                            ? 'bg-rose-500 hover:bg-rose-600'
-                            : 'bg-emerald-500 hover:bg-emerald-600'
-                        } transition-colors duration-200`}
-                    >
-                        {campaignStatus === '진행 중' ? <Pause size={16} /> : <Play size={16} />}
-                        {campaignStatus === '진행 중' ? '캠페인 중단' : '캠페인 실행'}
-                    </button>
-                    {!isEditing ? (
-                        <button
-                            onClick={handleEdit}
-                            className="text-sm px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center gap-1.5 transition-colors duration-200"
-                        >
-                            <Settings size={16} />
-                            수정
-                        </button>
-                    ) : (
-                        <>
-                            <button
-                                onClick={handleSave}
-                                className="text-sm px-4 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white flex items-center gap-1.5 transition-colors duration-200"
-                            >
-                                <Save size={16} />
-                                저장
-                            </button>
-                            <button
-                                onClick={handleCancel}
-                                className="text-sm px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center gap-1.5 transition-colors duration-200"
-                            >
-                                <X size={16} />
-                                취소
-                            </button>
-                        </>
-                    )}
-                </div>
-            </div>*/}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <div className="flex items-center">
@@ -187,10 +124,15 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
                 </div>
             </div>
             {/* 컨텐츠 영역: 이미지 + 정보 */}
-            <div className="flex flex-col md:flex-row gap-6 pt-3 pb-5 border-b border-gray-200">
+            <div className="flex flex-col md:flex-row gap-6 pt-3 pb-5 ">
                 {/* 왼쪽: 대표 이미지 */}
                 <div className="relative w-full md:w-1/3 lg:w-1/4">
                     <div className="aspect-[1/1.1] bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200">
+                        {/*<img
+                            src="/img/img1.png"
+                            alt="캠페인 대표 이미지"
+                            className="w-full h-full object-cover"
+                        />*/}
                         {campaign.imageUrl ? (
                             <img
                                 src={campaign.imageUrl}
@@ -215,7 +157,7 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
                     {/* 캠페인 가이드 버튼 */}
                     <Dialog>
                         <DialogTrigger asChild>
-                            <button className="w-full mt-2 py-2.5 px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-md flex items-center justify-center text-sm font-medium transition-colors duration-200 border border-indigo-100">
+                            <button className="w-full mt-4 py-2.5 px-4 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-md flex items-center justify-center text-sm font-medium transition-colors duration-200 border border-indigo-100">
                                 <Info size={16} className="mr-2" />
                                 캠페인 가이드 보기
                             </button>
@@ -245,12 +187,12 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
                 {/* 오른쪽: 정보 영역 */}
                 <div className="flex-1 bg-gray-50 rounded-lg p-3 border border-gray-200">
                     {/* 진행률 */}
-                    <div className="mb-4 p-3 bg-white rounded-md border border-gray-100 shadow-sm">
+                    <div className="mb-4 p-3 bg-white rounded-md border border-gray-200 shadow-sm">
                         <div className="flex items-center space-x-4">
                             {/* 아이콘 + 라벨 + 퍼센트 */}
                             <div className="flex items-center whitespace-nowrap">
                                 <TrendingUp className="w-5 h-5 text-indigo-600 mr-2" />
-                                <span className="font-medium text-gray-800 mr-2">진행률</span>
+                                <span className="font-medium text-gray-800 mr-2">총 진행률</span>
                                 <span className="font-bold text-indigo-600">{campaign.progress}%</span>
                             </div>
 
@@ -273,7 +215,7 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
 
                     {/* 정보 테이블 형식 */}
                     <div className="grid grid-cols-2 gap-5">
-                        <div className="space-y-3 bg-white rounded-md p-3 border border-gray-100 shadow-sm">
+                        <div className="space-y-3 bg-white rounded-md p-3 border border-gray-200 shadow-sm">
                             <div>
                                 <div className="flex items-center justify-between mb-2 pb-1 border-b-2 border-indigo-100">
                                     <div className="flex items-center">
@@ -344,7 +286,7 @@ export default function CampaignInfoCard({ campaign }: { campaign: Campaign }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="space-y-3 bg-white rounded-md p-3 border border-gray-100 shadow-sm">
+                        <div className="space-y-3 bg-white rounded-md p-3 border border-gray-200 shadow-sm">
                             {/* 제품 정보 */}
                             <div>
                                 <div className="flex items-center justify-between mb-2 pb-1 border-b-2 border-indigo-100">
