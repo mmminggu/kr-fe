@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect , useRef } from "react";
 import Link from "next/link";
 import {
     AlertCircle,
@@ -19,9 +19,18 @@ import {
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogDescription
+} from '@/src/components/ui/dialog';
 
 export default function InquiryList() {
     // 상태 관리
+    const [originalInquiries, setOriginalInquiries] = useState<Inquiry[]>([]);
     const [inquiries, setInquiries] = useState<Inquiry[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -29,19 +38,66 @@ export default function InquiryList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterCategory, setFilterCategory] = useState("all");
-    const [filterCampaign, setFilterCampaign] = useState("all");
+    const [filterCampaigns, setFilterCampaigns] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState("newest");
     const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
+    const dummyDataRef = useRef<Inquiry[] | null>(null);
+
+
     // 캠페인 목록 (예시)
     const campaigns = [
-        { id: "all", name: "모든 캠페인" },
-        { id: "organic_skincare", name: "유기농 스킨케어 체험단" },
-        { id: "summer_collection", name: "여름 신상품 체험단 모집" },
-        { id: "smart_home", name: "스마트 홈 가전 체험단" },
-        { id: "eco_friendly", name: "친환경 생활용품 체험단" },
-        { id: "food_review", name: "건강식품 리뷰 체험단" }
+        {
+            id: "all",
+            name: "모든 캠페인",
+            status: "all",
+            company: "",
+            startDate: "",
+            endDate: ""
+        },
+        {
+            id: "organic_skincare",
+            name: "유기농 스킨케어 체험단",
+            status: "completed",
+            company: "오가닉코리아",
+            startDate: "2025년 4월 25일",
+            endDate: "2025년 6월 20일"
+        },
+        {
+            id: "summer_collection",
+            name: "여름 신상품 체험단 모집",
+            status: "inProgress",
+            company: "화장품몰",
+            startDate: "2025년 4월 25일",
+            endDate: "2025년 5월 15일"
+        },
+        {
+            id: "smart_home",
+            name: "스마트 홈 가전 체험단",
+            status: "completed",
+            company: "패션마트",
+            startDate: "2025년 4월 20일",
+            endDate: "2025년 6월 15일"
+        },
+        {
+            id: "eco_friendly",
+            name: "친환경 생활용품 체험단",
+            status: "pending",
+            company: "헬스마트",
+            startDate: "2025년 4월 18일",
+            endDate: "2025년 6월 10일"
+        },
+        {
+            id: "food_review",
+            name: "건강식품 리뷰 체험단",
+            status: "inProgress",
+            company: "푸드몰",
+            startDate: "2025년 4월 15일",
+            endDate: "2025년 6월 5일"
+        }
     ];
+
+    // const filteredCampaigns = campaigns;
 
     // 카테고리 목록
     const categories = [
@@ -54,6 +110,50 @@ export default function InquiryList() {
         { id: "etc", name: "기타" }
     ];
 
+    // 새로 추가할 상태
+    const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
+    const [campaignSearchTerm, setCampaignSearchTerm] = useState("");
+    const [campaignStatusFilter, setCampaignStatusFilter] = useState("all");
+
+    // 캠페인 선택 핸들러
+    const handleCampaignSelect = (campaignId: string) => {
+        setFilterCampaigns((prev) =>
+            prev.includes(campaignId)
+                ? prev.filter((id) => id !== campaignId)
+                : [...prev, campaignId]
+        );
+    };
+
+    // 캠페인 행 클릭 핸들러
+    const handleCampaignRowClick = (campaignId) => {
+        handleCampaignSelect(campaignId);
+    };
+
+    // 필터링된 캠페인 목록
+    const filteredCampaigns = campaigns.filter(campaign => {
+        // all ID를 가진 캠페인은 표시하지 않음
+        if (campaign.id === "all") {
+            return false;
+        }
+
+        // 검색어 필터링
+        if (campaignSearchTerm &&
+            !campaign.name.toLowerCase().includes(campaignSearchTerm.toLowerCase()) &&
+            (campaign.company === undefined ||
+                !campaign.company.toLowerCase().includes(campaignSearchTerm.toLowerCase()))) {
+            return false;
+        }
+
+        // 상태 필터링 - status가 없으면 항상 표시
+        if (campaignStatusFilter !== "all" &&
+            campaign.status !== undefined &&
+            campaign.status !== campaignStatusFilter) {
+            return false;
+        }
+
+        return true;
+    });
+
     // 페이지 로드 시 데이터 가져오기
     useEffect(() => {
         // 실제 구현 시 API 호출로 대체
@@ -61,20 +161,39 @@ export default function InquiryList() {
             setLoading(true);
             try {
                 // API 호출 대신 더미 데이터 사용
-                const dummyData = Array.from({ length: 30 }, (_, i) => ({
-                    id: i + 1,
-                    title: `문의 제목 ${i + 1}`,
-                    content: `문의 내용 ${i + 1}입니다. 여기에 고객이 문의한 내용이 표시됩니다.`,
-                    status: getRandomStatus(),
-                    category: getRandomCategory(),
-                    campaign: i % 3 === 0 ? null : getRandomCampaign(),
-                    createdAt: getRandomDate(30),
-                    updatedAt: getRandomDate(15),
-                    username: `사용자${i + 1}`,
-                    email: `user${i + 1}@example.com`,
-                    answer: i % 3 === 0 ? null : `답변 내용 ${i + 1}입니다. 여기에 관리자가 답변한 내용이 표시됩니다.`,
-                    answerDate: i % 3 === 0 ? null : getRandomDate(10),
-                }));
+                if (!dummyDataRef.current) {
+                    const data = Array.from({ length: 30 }, (_, i) => ({
+                        id: i + 1,
+                        title: `문의 제목 ${i + 1}`,
+                        content: `문의 내용 ${i + 1}`,
+                        status: getRandomStatus(),
+                        category: getRandomCategory(),
+                        campaign: i % 3 === 0 ? null : getRandomCampaign(),
+                        createdAt: getRandomDate(30),
+                        updatedAt: getRandomDate(15),
+                        username: `사용자${i + 1}`,
+                        email: `user${i + 1}@example.com`,
+                        answer: i % 3 === 0 ? null : `답변 내용 ${i + 1}입니다.`,
+                        answerDate: i % 3 === 0 ? null : getRandomDate(10),
+                    }));
+
+                    // 날짜 복원
+                    data.forEach((item) => {
+                        item.createdAt = new Date(item.createdAt);
+                        item.updatedAt = new Date(item.updatedAt);
+                        if (item.answerDate) item.answerDate = new Date(item.answerDate);
+                    });
+
+                    dummyDataRef.current = data;
+                }
+
+                const dummyData = dummyDataRef.current!;
+
+                dummyData.forEach((item) => {
+                    item.createdAt = new Date(item.createdAt);
+                    item.updatedAt = new Date(item.updatedAt);
+                    if (item.answerDate) item.answerDate = new Date(item.answerDate);
+                });
 
                 // 필터링 및 정렬 적용
                 let filteredData = dummyData;
@@ -82,9 +201,12 @@ export default function InquiryList() {
                 // 상태 필터링
                 if (filterStatus === "unanswered") {
                     filteredData = filteredData.filter(inquiry => inquiry.answer === null);
+                } else if (filterStatus === "answered") {
+                    filteredData = filteredData.filter(inquiry => inquiry.answer !== null);
                 } else if (filterStatus === "today") {
                     filteredData = filteredData.filter(inquiry => isToday(inquiry.createdAt));
                 }
+
 
                 // 카테고리 필터링
                 if (filterCategory !== "all") {
@@ -94,9 +216,9 @@ export default function InquiryList() {
                 }
 
                 // 캠페인 필터링
-                if (filterCampaign !== "all") {
+                if (filterCampaigns.length > 0) {
                     filteredData = filteredData.filter(inquiry =>
-                        inquiry.campaign && inquiry.campaign.id === filterCampaign
+                        inquiry.campaign && filterCampaigns.includes(inquiry.campaign.id)
                     );
                 }
 
@@ -126,6 +248,8 @@ export default function InquiryList() {
                 }
 
                 setInquiries(filteredData);
+                setOriginalInquiries(dummyData);  // ✅ 원본 전체 보존
+                setInquiries(filteredData);       // ✅ 필터 적용된 결과만 사용
                 setTotalPages(Math.ceil(filteredData.length / 10));
             } catch (error) {
                 console.error("문의 데이터를 불러오는 중 오류가 발생했습니다", error);
@@ -135,7 +259,7 @@ export default function InquiryList() {
         };
 
         fetchInquiries();
-    }, [searchTerm, filterStatus, filterCategory, filterCampaign, sortBy]);
+    }, [searchTerm, filterStatus, filterCategory, filterCampaigns, sortBy]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -151,11 +275,6 @@ export default function InquiryList() {
         setCurrentPage(1); // 필터 변경 시 첫 페이지로 이동
     };
 
-    const handleCampaignChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilterCampaign(e.target.value);
-        setCurrentPage(1); // 필터 변경 시 첫 페이지로 이동
-    };
-
     const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSortBy(e.target.value);
         setCurrentPage(1); // 정렬 변경 시 첫 페이지로 이동
@@ -167,9 +286,10 @@ export default function InquiryList() {
     const currentInquiries = inquiries.slice(startIndex, endIndex);
 
     // 통계 데이터 계산
-    const totalInquiries = inquiries.length;
-    const unansweredInquiries = inquiries.filter(i => i.answer === null).length;
-    const todayInquiries = inquiries.filter(i => isToday(i.createdAt)).length;
+    const totalInquiries = originalInquiries.length;
+    const unansweredInquiries = originalInquiries.filter(i => i.answer === null).length;
+    const todayInquiries = originalInquiries.filter(i => isToday(i.createdAt)).length;
+
 
     // 엑셀 다운로드 처리
     const handleExcelDownload = () => {
@@ -247,7 +367,10 @@ export default function InquiryList() {
                 </div>
                 <div
                     className="bg-white rounded-lg shadow-sm p-5 border border-gray-200 hover:border-green-300 cursor-pointer transition-all"
-                    onClick={() => setFilterStatus("today")}
+                    onClick={() => {
+                        setFilterStatus("today");
+                        setCurrentPage(1);
+                    }}
                 >
                     <div className="flex justify-between">
                         <div>
@@ -265,166 +388,270 @@ export default function InquiryList() {
                 </div>
             </div>
 
-            {/* 검색 및 필터 */}
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-4">
-                    <div className="relative w-full md:w-96">
-                        <form onSubmit={handleSearch} className="flex items-center">
-                            <div className="relative flex-grow">
-                                <input
-                                    type="text"
-                                    placeholder="제목, 내용 또는 작성자 검색"
-                                    className="pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                {searchTerm && (
-                                    <button
-                                        type="button"
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-gray-600"
-                                        onClick={() => setSearchTerm("")}
-                                    >
-                                        <X size={16} />
-                                    </button>
-                                )}
-                            </div>
-                            <Button
-                                type="submit"
-                                className="ml-2 bg-indigo-500 hover:bg-indigo-600 text-white"
-                            >
-                                검색
-                            </Button>
-                        </form>
+            {/* 상태 탭 필터 */}
+            <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2 mb-4">
+                {[
+                    { id: "all", name: "전체" },
+                    { id: "unanswered", name: "미답변" },
+                    { id: "answered", name: "답변완료" },
+                ].map((status) => (
+                    <button
+                        key={status.id}
+                        className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-all ${
+                            filterStatus === status.id
+                                ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-600'
+                                : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                        onClick={() => setFilterStatus(status.id)}
+                    >
+                        {status.name}
+                    </button>
+                ))}
+            </div>
+
+            {/* 필터 섹션 */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                {/* 왼쪽: 검색창 + 카테고리 + 캠페인 */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full">
+                    {/* 검색창 */}
+                    <div className="relative w-full sm:w-[280px]">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <Search size={18} className="text-gray-400" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="제목, 내용 또는 작성자 검색"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                        />
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="flex items-center text-gray-700"
-                            onClick={toggleFilter}
+                    {/* 카테고리 필터 */}
+                    <div className="relative w-full sm:w-44">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <Filter size={18} className="text-gray-400" />
+                        </div>
+                        <select
+                            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
+                            value={filterCategory}
+                            onChange={(e) => setFilterCategory(e.target.value)}
                         >
-                            <Filter size={16} className="mr-2" />
-                            {isFilterExpanded ? "필터 접기" : "필터 옵션"}
-                            <ChevronDown size={16} className={`ml-2 transition-transform ${isFilterExpanded ? 'rotate-180' : ''}`} />
-                        </Button>
-
-                        {(filterCategory !== "all" || filterCampaign !== "all" || sortBy !== "newest") && (
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                className="flex items-center text-red-600 hover:text-red-800 hover:bg-red-50"
-                                onClick={resetFilters}
-                            >
-                                <X size={16} className="mr-1" />
-                                초기화
-                            </Button>
-                        )}
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <ChevronDown size={18} className="text-gray-400" />
+                        </div>
                     </div>
+
+                    {/* 캠페인 선택 버튼 */}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="flex items-center h-[38px] border-gray-300 text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsCampaignDialogOpen(true)}
+                    >
+                        <MessageSquare size={16} className="mr-1.5 text-gray-500" />
+                        캠페인 선택
+                        {filterCampaigns.length > 0 && (
+                            <Badge className="ml-1.5 bg-indigo-100 text-indigo-800 font-normal">
+                                {filterCampaigns.length}
+                            </Badge>
+                        )}
+                    </Button>
+                    {filterCampaigns.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {filterCampaigns.map((campaignId) => {
+                                const campaign = campaigns.find((c) => c.id === campaignId);
+                                return (
+                                    <Badge
+                                        key={campaignId}
+                                        className="bg-blue-100 text-blue-800 flex items-center px-3 py-1"
+                                    >
+                                        {campaign?.name}
+                                        <X
+                                            size={14}
+                                            className="ml-1 cursor-pointer"
+                                            onClick={() =>
+                                                setFilterCampaigns((prev) =>
+                                                    prev.filter((id) => id !== campaignId)
+                                                )
+                                            }
+                                        />
+                                    </Badge>
+                                );
+                            })}
+                        </div>
+                    )}
+
                 </div>
 
-                {isFilterExpanded && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200">
-                        {/* 카테고리 필터 */}
-                        <div className="space-y-1">
-                            <label className="block text-sm font-medium text-gray-700">
-                                카테고리
-                            </label>
-                            <select
-                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                value={filterCategory}
-                                onChange={handleCategoryChange}
+                {/* 오른쪽: 정렬 필터만 */}
+                <div className="flex justify-end">
+                    <div className="relative w-44">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                             >
-                                {categories.map(category => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                                />
+                            </svg>
                         </div>
-
-                        {/* 캠페인 필터 */}
-                        <div className="space-y-1">
-                            <label className="block text-sm font-medium text-gray-700">
-                                캠페인
-                            </label>
-                            <select
-                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                value={filterCampaign}
-                                onChange={handleCampaignChange}
-                            >
-                                {campaigns.map(campaign => (
-                                    <option key={campaign.id} value={campaign.id}>
-                                        {campaign.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* 정렬 옵션 */}
-                        <div className="space-y-1">
-                            <label className="block text-sm font-medium text-gray-700">
-                                정렬
-                            </label>
-                            <select
-                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                value={sortBy}
-                                onChange={handleSortChange}
-                            >
-                                <option value="newest">최신순</option>
-                                <option value="oldest">오래된순</option>
-                                <option value="unansweredFirst">미답변 우선</option>
-                                <option value="answeredFirst">답변 우선</option>
-                            </select>
+                        <select
+                            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 appearance-none"
+                            value={sortBy}
+                            onChange={handleSortChange}
+                        >
+                            <option value="newest">최신순</option>
+                            <option value="oldest">오래된순</option>
+                            <option value="unansweredFirst">미답변 우선</option>
+                            <option value="answeredFirst">답변 우선</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <ChevronDown size={18} className="text-gray-400" />
                         </div>
                     </div>
-                )}
-
-                {/* 현재 적용된 필터 표시 */}
-                {(filterStatus !== "all" || filterCategory !== "all" || filterCampaign !== "all") && (
-                    <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-200">
-                        <span className="text-sm text-gray-600">적용된 필터:</span>
-
-                        {filterStatus !== "all" && (
-                            <Badge className="bg-blue-100 text-blue-800 flex items-center gap-1 px-3 py-1">
-                                {filterStatus === "unanswered" ? "미답변" :
-                                    filterStatus === "today" ? "오늘 접수" : filterStatus}
-                                <button
-                                    className="ml-1 text-blue-600 hover:text-blue-800"
-                                    onClick={() => setFilterStatus("all")}
-                                >
-                                    <X size={14} />
-                                </button>
-                            </Badge>
-                        )}
-
-                        {filterCategory !== "all" && (
-                            <Badge className="bg-purple-100 text-purple-800 flex items-center gap-1 px-3 py-1">
-                                {categories.find(c => c.id === filterCategory)?.name || filterCategory}
-                                <button
-                                    className="ml-1 text-purple-600 hover:text-purple-800"
-                                    onClick={() => setFilterCategory("all")}
-                                >
-                                    <X size={14} />
-                                </button>
-                            </Badge>
-                        )}
-
-                        {filterCampaign !== "all" && (
-                            <Badge className="bg-green-100 text-green-800 flex items-center gap-1 px-3 py-1">
-                                {campaigns.find(c => c.id === filterCampaign)?.name || filterCampaign}
-                                <button
-                                    className="ml-1 text-green-600 hover:text-green-800"
-                                    onClick={() => setFilterCampaign("all")}
-                                >
-                                    <X size={14} />
-                                </button>
-                            </Badge>
-                        )}
-                    </div>
-                )}
+                </div>
             </div>
+
+            {/* 캠페인 선택 다이얼로그 */}
+            <Dialog open={isCampaignDialogOpen} onOpenChange={setIsCampaignDialogOpen}>
+                <DialogContent className="sm:max-w-[800px]">
+                    <DialogHeader>
+                        <DialogTitle>캠페인 선택</DialogTitle>
+                        <DialogDescription>
+                            문의를 필터링할 캠페인을 선택하세요
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {/* 캠페인 검색 및 필터 */}
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="relative flex-grow">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <Search size={16} className="text-gray-400" />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="캠페인명 또는 업체 검색"
+                                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-300"
+                                value={campaignSearchTerm}
+                                onChange={(e) => setCampaignSearchTerm(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="relative w-[140px]">
+                            <select
+                                className="appearance-none pl-3 pr-8 py-2 border border-gray-300 rounded-lg w-full bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-300"
+                                value={campaignStatusFilter}
+                                onChange={(e) => setCampaignStatusFilter(e.target.value)}
+                            >
+                                <option value="all">모든 상태</option>
+                                <option value="completed">완료</option>
+                                <option value="inProgress">진행중</option>
+                                <option value="pending">점검중</option>
+                            </select>
+                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <ChevronDown size={16} className="text-gray-500" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 캠페인 테이블 */}
+                    <div className="border rounded-lg overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-gray-50 text-gray-700">
+                            <tr>
+                                <th className="w-10 px-3 py-3 text-left">&nbsp;</th>
+                                <th className="px-3 py-3 text-left font-medium">캠페인</th>
+                                <th className="px-3 py-3 text-left font-medium">상태</th>
+                                <th className="px-3 py-3 text-left font-medium">업체</th>
+                                <th className="px-3 py-3 text-left font-medium">시작일</th>
+                                <th className="px-3 py-3 text-left font-medium">종료일</th>
+                            </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                            {filteredCampaigns.map((campaign) => (
+                                <tr
+                                    key={campaign.id}
+                                    className="hover:bg-gray-50 cursor-pointer"
+                                    onClick={() => handleCampaignRowClick(campaign.id)}
+                                >
+                                    <td className="px-3 py-3">
+                                        <input
+                                            type="checkbox"
+                                            checked={filterCampaigns.includes(campaign.id)}
+                                            onChange={() => handleCampaignSelect(campaign.id)}
+                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <span className="font-medium text-blue-600">{campaign.name}</span>
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        {campaign.status === 'inProgress' && (
+                                            <Badge className="bg-green-100 text-green-800 font-normal">진행중</Badge>
+                                        )}
+                                        {campaign.status === 'completed' && (
+                                            <Badge className="bg-gray-100 text-gray-800 font-normal">완료</Badge>
+                                        )}
+                                        {campaign.status === 'pending' && (
+                                            <Badge className="bg-blue-100 text-blue-800 font-normal">점검중</Badge>
+                                        )}
+                                        {!campaign.status && (
+                                            <span className="text-gray-400">-</span>
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-3 text-gray-700">{campaign.company}</td>
+                                    <td className="px-3 py-3 text-gray-700">
+                                        <div className="flex items-center">
+                                            <Calendar size={14} className="mr-1.5 text-gray-400" />
+                                            {campaign.startDate}
+                                        </div>
+                                    </td>
+                                    <td className="px-3 py-3 text-gray-700">
+                                        <div className="flex items-center">
+                                            <Calendar size={14} className="mr-1.5 text-gray-400" />
+                                            {campaign.endDate}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <DialogFooter className="mt-4 flex justify-between">
+                        <Button
+                            variant="outline"
+                            onClick={() => setFilterCampaigns([])}
+                            className="text-gray-700"
+                        >
+                            초기화
+                        </Button>
+                        <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => setIsCampaignDialogOpen(false)}>
+                                취소
+                            </Button>
+                            <Button onClick={() => setIsCampaignDialogOpen(false)}>
+                                선택 완료
+                            </Button>
+                        </div>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* 문의 목록 */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
@@ -529,11 +756,6 @@ export default function InquiryList() {
                                             <Calendar size={14} className="mr-1 text-gray-400" />
                                             {formatDate(inquiry.createdAt)}
                                         </div>
-                                        {isToday(inquiry.createdAt) && (
-                                            <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
-                                                New
-                                            </span>
-                                        )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <Link
@@ -682,9 +904,9 @@ function getRandomCampaign(): {id: string, name: string} {
     ];
     return campaigns[Math.floor(Math.random() * campaigns.length)];
 }
-
-function getRandomDate(maxDaysAgo: number): Date {
-    const date = new Date();
-    date.setDate(date.getDate() - Math.floor(Math.random() * maxDaysAgo));
-    return date;
+function getRandomDate(withinDays: number): Date {
+    const now = new Date();
+    const offsetDays = Math.floor(Math.random() * withinDays);
+    const offsetMilliseconds = offsetDays * 24 * 60 * 60 * 1000;
+    return new Date(now.getTime() - offsetMilliseconds);
 }
