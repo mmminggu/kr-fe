@@ -307,7 +307,7 @@ export default function InquiryList() {
         setSearchTerm("");
         setFilterStatus("all");
         setFilterCategory("all");
-        setFilterCampaign("all");
+        setFilterCampaigns("all");
         setSortBy("newest");
     };
 
