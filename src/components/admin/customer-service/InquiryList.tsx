@@ -778,75 +778,85 @@ export default function InquiryList() {
 
                 {/* 페이지네이션 */}
                 {!loading && currentInquiries.length > 0 && (
-                    <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                        <div className="flex-1 flex justify-between sm:hidden">
-                            <button
-                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                                disabled={currentPage === 1}
-                                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                                    currentPage === 1 ? 'text-gray-300 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50'
-                                }`}
-                            >
-                                이전
-                            </button>
-                            <button
-                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                disabled={currentPage === totalPages}
-                                className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                                    currentPage === totalPages ? 'text-gray-300 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50'
-                                }`}
-                            >
-                                다음
-                            </button>
-                        </div>
-                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div className="px-6 py-4 bg-white border-t border-gray-200">
+                        <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-gray-700">
-                                    전체 <span className="font-medium">{inquiries.length}</span>개 문의 중{' '}
                                     <span className="font-medium">{startIndex + 1}</span>-
                                     <span className="font-medium">{Math.min(endIndex, inquiries.length)}</span>
+                                    {' / '}
+                                    <span className="font-medium">{inquiries.length}</span> 건
                                 </p>
                             </div>
-                            <div>
-                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                    <button
-                                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                                        disabled={currentPage === 1}
-                                        className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
-                                            currentPage === 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'
-                                        }`}
-                                    >
-                                        <span className="sr-only">이전</span>
-                                        <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-                                    </button>
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                        <button
-                                            key={page}
-                                            onClick={() => handlePageChange(page)}
-                                            className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                                page === currentPage
-                                                    ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                                                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                            }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    ))}
-                                    <button
-                                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                        disabled={currentPage === totalPages}
-                                        className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
-                                            currentPage === totalPages ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'
-                                        }`}
-                                    >
-                                        <span className="sr-only">다음</span>
-                                        <ChevronRight className="h-5 w-5" aria-hidden="true" />
-                                    </button>
-                                </nav>
-                            </div>
+                            <nav className="flex items-center space-x-2">
+                                <button
+                                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                    disabled={currentPage === 1}
+                                    className={`px-2 py-1 text-sm rounded-md ${
+                                        currentPage === 1
+                                            ? 'text-gray-400 cursor-not-allowed'
+                                            : 'text-gray-700 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => handlePageChange(pageNumber)}
+                                                className={`px-3 py-1 text-sm rounded-md ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'text-gray-700 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    }
+
+                                    if (
+                                        (pageNumber === currentPage - 2 && currentPage > 3) ||
+                                        (pageNumber === currentPage + 2 && currentPage < totalPages - 2)
+                                    ) {
+                                        return (
+                                            <span
+                                                key={pageNumber}
+                                                className="px-2 py-1 text-sm text-gray-500"
+                                            >
+                                ...
+                            </span>
+                                        );
+                                    }
+
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className={`px-2 py-1 text-sm rounded-md ${
+                                        currentPage === totalPages
+                                            ? 'text-gray-400 cursor-not-allowed'
+                                            : 'text-gray-700 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </nav>
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );
