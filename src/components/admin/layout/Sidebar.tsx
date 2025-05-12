@@ -67,41 +67,31 @@ export default function AdminSidebar() {
     };
 
     const navItems = [
-        { name: '대시보드', icon: <LayoutDashboard size={20} />, href: '/admin' },
-        { name: '회원관리', icon: <Users size={20} />, href: '/admin/users' },
+        /*{ name: '대시보드', icon: <LayoutDashboard size={20} />, href: '/admin' },*/
+        { name: '회원 관리', icon: <Users size={20} />, href: '/admin/users' },
         {
-            name: '캠페인',
+            name: '캠페인 관리',
             icon: <Package size={20} />,
             href: '/admin/campaigns',
-            submenu: [
+            /*submenu: [
                 { name: '캠페인 목록', href: '/admin/campaigns' },
                 { name: '캠페인 승인', href: '/admin/campaigns/approval' },
                 { name: '예약 리스트', href: '/admin/campaigns/reservations' },
-            ],
+            ],*/
         },
-        {
+        /*{
             name: '리뷰어 활동',
             icon: <FileText size={20} />,
             href: '/admin/reviewers',
-        },
-        {
-            name: '정산 관리',
-            icon: <DollarSign size={20} />,
-            href: '/admin/settlements',
-            submenu: [
-                { name: '포인트 출금 신청 내역', href: '/admin/settlements/withdrawal' },
-                { name: '포인트 전체 리스트', href: '/admin/settlements/points' },
-                { name: '캠페인 입출금 내역', href: '/admin/settlements/campaign' },
-            ],
-        },
+        },*/
         {
             name: '쇼핑몰 관리',
             icon: <ShoppingBag size={20} />,
             href: '/admin/shops',
-            submenu: [
-                { name: '쇼핑몰 등록', href: '/admin/shops/create' },
+            /*submenu: [
+                /!*{ name: '쇼핑몰 등록', href: '/admin/shops/create' },*!/
                 { name: '쇼핑몰 목록', href: '/admin/shops' },
-            ],
+            ],*/
         },
         {
             name: '고객센터',
@@ -113,7 +103,17 @@ export default function AdminSidebar() {
                 { name: '문의', href: '/admin/customer-service/inquiries' },
             ],
         },
-        { name: '광고견적', icon: <FileCheck size={20} />, href: '/admin/ad-quotes' },
+        {
+            name: '정산 관리',
+            icon: <DollarSign size={20} />,
+            href: '/admin/settlements',
+            submenu: [
+                { name: '포인트 출금 신청 내역', href: '/admin/settlements/withdrawal' },
+                { name: '포인트 전체 리스트', href: '/admin/settlements/points' },
+                { name: '캠페인 입출금 내역', href: '/admin/settlements/campaign' },
+            ],
+        },
+        { name: '광고 견적', icon: <FileCheck size={20} />, href: '/admin/adQuotation' },
         { name: '알림', icon: <Bell size={20} />, href: '/admin/notifications' },
     ];
 

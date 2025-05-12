@@ -180,12 +180,11 @@ export default function OptionTable({ initialOptions }: { initialOptions: Option
     };
 
     return (
-        <section className="">
-            <p className="text-sm text-gray-500 mb-4">캠페인에 노출할 제품 옵션을 등록하거나 수정할 수 있습니다.</p>
+        <section className="pt-6">
             <div className="rounded-xl overflow-hidden border border-gray-200">
                 <div className="max-h-[250px] overflow-y-auto">
                     <table className="w-full table-fixed text-sm text-gray-900 border-collapse">
-                        <thead className="bg-gray-100 text-xs font-semibold text-gray-600 sticky top-0 z-10">
+                        <thead className="bg-gradient-to-r from-gray-50 to-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         <tr className="border-b">
                             <th className="px-4 py-2 text-left w-[30%]">옵션명</th>
                             <th className="px-4 py-2 text-left w-[8rem]">포인트</th>

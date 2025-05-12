@@ -1,168 +1,401 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import Image from "next/image"
 import { Progress } from '@/src/components/ui/progress';
 import CampaignInfoCard from '@/src/components/admin/campaigns/detail/CampaignInfo';
+import ProofList from '@/src/components/admin/campaigns/detail/ProofList';
+import ReservationList from '@/src/components/admin/campaigns/detail/ReservationList';
 import { OptionItem } from '@/src/components/admin/campaigns/detail/OptionTable';
 import { RecruitmentDay } from '@/src/components/admin/campaigns/detail/RecruitmentTable';
 import clsx from 'clsx';
 
+// 여기서 Campaign 인터페이스 정의
 interface Campaign {
-    id: number;
+    id: string;
+    title: string;
+    status: 'pending' | 'active' | 'completed' | 'rejected' | 'paused';
+    startDate: string;
+    endDate: string;
     progress: number;
     productPrice: number;
     shippingFee: number;
     rewardPoints: number;
     options: OptionItem[];
     recruit: RecruitmentDay[];
+    totalRecruits: number;
+    currentRecruits: number;
+    csWaiting: number;
+    csCompleted: number;
+    todayRecruits: number;
+    receiptProofs: {
+        waiting: number;
+        approved: number;
+        rejected: number;
+    };
+    reviewProofs: {
+        waiting: number;
+        approved: number;
+        rejected: number;
+    };
+}
+
+// CampaignList의 캠페인 데이터 형식 정의
+interface ListCampaign {
+    id: string;
+    title: string;
+    status: 'pending' | 'active' | 'completed' | 'rejected';
+    company: string;
+    deadline: string;
+    applicants: number;
+    selectedReviewers: number;
+    completedReviews: number;
+    createdAt: string;
+    isActive: boolean;
 }
 
 import {
     Star, TrendingUp, PlusCircle, Users, FilePlus2, UserPlus,
-    Clock, ReceiptText, Sparkles, PieChart, MessageCircle,
-    CalendarDays, Bell, Search, RefreshCw, ChevronRight,
-    Calendar, BadgeCheck, Pause, Play, Download, Filter, Pencil, Trash2, Settings, Save, Package
+    Clock, ReceiptText, ChevronLeft, PieChart, MessageCircle,
+    CalendarDays, Bell, Search, RefreshCw, ChevronRight, AlertCircle,
+    Calendar, BadgeCheck, Pause, Play, Download, Filter, Pencil,
+    Trash2, Settings, Save, Package, CheckCircle2, XCircle
 } from 'lucide-react';
 
 export default function CampaignDetailPage() {
+    const params = useParams();
+    const campaignId = params.id as string;
+    const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('receipt');
-    const [campaign, setCampaign] = useState({
-        id: 'CAM-2023-05-001',
-        title: '신제품 스마트워치 체험단 모집',
-        status: '진행 중', // '예정', '종료'
-        startDate: '2025-05-01',
-        endDate: '2025-05-30',
-        progress: 62,
-        productPrice: 159000,
-        shippingFee: 3000,
-        rewardPoints: 15000,
-        options: [
-            {
-                name: '블랙',
-                isWished: true,                 // 찜 여부
-                isPhotoRequired: true,         // 포토 증빙 여부
-                reviewType: '포토리뷰',         // '포토리뷰' | '텍스트리뷰'
-                deliveryType: '실배송',         // '실배송' | '빈박스'
-                recruitCount: 30,               // 모집 인원
-                point: 1000
-            },
-            {
-                name: '화이트',
-                isWished: false,
-                isPhotoRequired: false,
-                reviewType: '텍스트리뷰',
-                deliveryType: '빈박스',
-                recruitCount: 50,
-                point: 500
-            }
-        ],
-        recruit:[
-            {
-                date: '2025-05-01',
-                quota: 5,
-            },
-            {
-                date: '2025-05-02',
-                quota: 3,
-            }
-        ],
-        totalRecruits: 100,
-        currentRecruits: 62,
-        csWaiting: 8,
-        csCompleted: 24,
-        todayRecruits: 5,
-        receiptProofs: {
-            waiting: 18,
-            approved: 34,
-            rejected: 2
-        },
-        reviewProofs: {
-            waiting: 12,
-            approved: 22,
-            rejected: 0
-        }
-    });
+    const [campaign, setCampaign] = useState<Campaign | null>(null);
 
-    const [activePeriod, setActivePeriod] = useState('1m');  // 활성화된 기간 ('1m', '3m', '6m', 'custom')
-    const [dateRange, setDateRange] = useState([new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()]); // [시작일, 종료일]
-    const [statusFilter, setStatusFilter] = useState('');  // 상태 필터
-    const [searchText, setSearchText] = useState('');  // 검색어
+    // 모든 useState 훅들을 여기로 이동
+    const [activePeriod, setActivePeriod] = useState('1m');
+    const [dateRange, setDateRange] = useState([new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()]);
+    const [statusFilter, setStatusFilter] = useState('');
+    const [searchText, setSearchText] = useState('');
+
+    useEffect(() => {
+        // API 호출로 캠페인 데이터 로드
+        const fetchCampaign = async () => {
+            try {
+                // 실제로는 여기서 API 호출을 통해 특정 ID의 캠페인 데이터를 가져옴
+                console.log('로드할 캠페인 ID:', campaignId);
+
+                // CampaignList에서 가져온 mockCampaigns 배열 - 여기서 직접 정의
+                const mockCampaigns: ListCampaign[] = [
+                    {
+                        id: 'camp-001',
+                        title: '여름 신상품 체험단 모집',
+                        status: 'active',
+                        company: '화장품몰',
+                        deadline: '2025-05-15',
+                        applicants: 32,
+                        selectedReviewers: 10,
+                        completedReviews: 3,
+                        createdAt: '2025-04-01',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-002',
+                        title: '헤어 케어 제품 리뷰어 모집',
+                        status: 'active',
+                        company: '뷰티샵',
+                        deadline: '2025-05-20',
+                        applicants: 45,
+                        selectedReviewers: 15,
+                        completedReviews: 8,
+                        createdAt: '2025-04-05',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-003',
+                        title: '주방용품 체험단',
+                        status: 'active',
+                        company: '홈쇼핑몰',
+                        deadline: '2025-05-25',
+                        applicants: 28,
+                        selectedReviewers: 8,
+                        completedReviews: 5,
+                        createdAt: '2025-04-08',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-004',
+                        title: '뷰티 디바이스 리뷰어 모집',
+                        status: 'pending',
+                        company: '코스메틱몰',
+                        deadline: '2025-06-01',
+                        applicants: 0,
+                        selectedReviewers: 12,
+                        completedReviews: 0,
+                        createdAt: '2025-04-15',
+                        isActive: false,
+                    },
+                    {
+                        id: 'camp-005',
+                        title: '건강식품 체험단',
+                        status: 'pending',
+                        company: '헬스마트',
+                        deadline: '2025-06-10',
+                        applicants: 0,
+                        selectedReviewers: 6,
+                        completedReviews: 0,
+                        createdAt: '2025-04-18',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-006',
+                        title: '가정용 운동기구 체험단',
+                        status: 'completed',
+                        company: '스포츠마트',
+                        deadline: '2025-04-10',
+                        applicants: 65,
+                        selectedReviewers: 20,
+                        completedReviews: 20,
+                        createdAt: '2025-03-01',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-007',
+                        title: '프리미엄 마스크팩 리뷰어 모집',
+                        status: 'completed',
+                        company: '스킨케어몰',
+                        deadline: '2025-04-05',
+                        applicants: 78,
+                        selectedReviewers: 25,
+                        completedReviews: 22,
+                        createdAt: '2025-03-05',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-008',
+                        title: '스마트 홈 가전 체험단',
+                        status: 'rejected',
+                        company: '테크마트',
+                        deadline: '2025-05-01',
+                        applicants: 0,
+                        selectedReviewers: 0,
+                        completedReviews: 0,
+                        createdAt: '2025-04-10',
+                        isActive: false,
+                    },
+                    {
+                        id: 'camp-009',
+                        title: '신상 슈즈 체험단',
+                        status: 'completed',
+                        company: '패션마트',
+                        deadline: '2025-06-15',
+                        applicants: 0,
+                        selectedReviewers: 15,
+                        completedReviews: 0,
+                        createdAt: '2025-04-20',
+                        isActive: true,
+                    },
+                    {
+                        id: 'camp-010',
+                        title: '유기농 스킨케어 체험단',
+                        status: 'completed',
+                        company: '유기농화장품',
+                        deadline: '2025-06-20',
+                        applicants: 0,
+                        selectedReviewers: 100,
+                        completedReviews: 50,
+                        createdAt: '2025-04-25',
+                        isActive: false,
+                    },
+                    {
+                        id: 'camp-011',
+                        title: '여름 신상품 체험단 모집',
+                        status: 'active',
+                        company: '화장품몰',
+                        deadline: '2025-05-15',
+                        applicants: 0,
+                        selectedReviewers: 50,
+                        completedReviews: 20,
+                        createdAt: '2025-04-25',
+                        isActive: false,
+                    },
+                ];
+
+                // mockCampaigns에서 해당 ID와 일치하는 캠페인 찾기
+                const foundCampaign = mockCampaigns.find(camp => camp.id === campaignId);
+
+                if (foundCampaign) {
+                    // CampaignDetail에서 필요한 데이터 구조로 변환
+                    const detailCampaign: Campaign = {
+                        id: foundCampaign.id,
+                        title: foundCampaign.title,
+                        status: foundCampaign.status, // pending, active, completed, rejected
+                        startDate: foundCampaign.createdAt, // 시작일은 생성일로 대체
+                        endDate: foundCampaign.deadline, // 종료일은 마감일로 대체
+                        progress: Math.round((foundCampaign.completedReviews / (foundCampaign.selectedReviewers || 1)) * 100),
+                        productPrice: 159000, // 기본값
+                        shippingFee: 3000, // 기본값
+                        rewardPoints: 15000, // 기본값
+                        options: [
+                            {
+                                name: '블랙',
+                                isWished: true,
+                                isPhotoRequired: true,
+                                reviewType: '포토리뷰',
+                                deliveryType: '실배송',
+                                recruitCount: Math.round(foundCampaign.selectedReviewers / 2) || 10,
+                                point: 1000
+                            },
+                            {
+                                name: '화이트',
+                                isWished: false,
+                                isPhotoRequired: false,
+                                reviewType: '텍스트리뷰',
+                                deliveryType: '빈박스',
+                                recruitCount: Math.round(foundCampaign.selectedReviewers / 2) || 10,
+                                point: 500
+                            }
+                        ],
+                        recruit: [
+                            {
+                                date: foundCampaign.createdAt,
+                                quota: Math.round(foundCampaign.selectedReviewers * 0.3) || 5,
+                            },
+                            {
+                                date: new Date(new Date(foundCampaign.createdAt).getTime() + 86400000).toISOString().split('T')[0], // 생성일 + 1일
+                                quota: Math.round(foundCampaign.selectedReviewers * 0.7) || 5,
+                            }
+                        ],
+                        totalRecruits: foundCampaign.selectedReviewers || 20,
+                        currentRecruits: foundCampaign.completedReviews || 0,
+                        csWaiting: 8, // 기본값
+                        csCompleted: 24, // 기본값
+                        todayRecruits: 5, // 기본값
+                        receiptProofs: {
+                            waiting: 18,
+                            approved: 34,
+                            rejected: 2
+                        },
+                        reviewProofs: {
+                            waiting: 12,
+                            approved: 22,
+                            rejected: 0
+                        }
+                    };
+
+                    setCampaign(detailCampaign);
+                } else {
+                    // 캠페인을 찾지 못했을 때
+                    console.error('캠페인을 찾을 수 없음:', campaignId);
+                    setCampaign(null);
+                }
+
+                setLoading(false);
+            } catch (error) {
+                console.error('캠페인 로딩 중 오류 발생:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchCampaign();
+    }, [campaignId]);
+
+    // 로딩 상태 처리
+    if (loading) {
+        return (
+            <div className="w-full py-12 flex items-center justify-center">
+                <div className="animate-pulse flex flex-col items-center">
+                    <div className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+                    <p className="mt-4 text-gray-600">캠페인 정보를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!campaign) {
+        return (
+            <div className="container mx-auto py-12 text-center">
+                <AlertCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">캠페인을 찾을 수 없습니다</h2>
+                <p className="text-gray-600 mb-6">요청하신 캠페인 정보를 찾을 수 없습니다.</p>
+                <a href="/admin/campaigns" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <ChevronLeft size={16} className="mr-2" />
+                    캠페인 목록으로 돌아가기
+                </a>
+            </div>
+        );
+    }
 
     // 날짜 포맷 헬퍼 함수
-    const formatDateYYYY_MM_DD = (date) => {
+    const formatDateYYYY_MM_DD = (date: Date) => {
         return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
     };
 
-    // 검색 핸들러
-    const handleSearch = () => {
-        // 검색 로직 구현
-        console.log('검색:', {
-            기간: activePeriod,
-            시작일: formatDate(dateRange[0]),
-            종료일: formatDate(dateRange[1]),
-            상태: statusFilter,
-            검색어: searchText
-        });
+    // 캠페인 작업 처리 함수
+    const handleCampaignAction = (action: string) => {
+        if (action === 'approve') {
+            // 승인 처리 로직
+            setCampaign({...campaign, status: 'active'});
+            // 실제 API 호출 코드 추가
+            console.log('캠페인 승인됨');
+        } else if (action === 'reject') {
+            // 반려 처리 로직 (모달로 반려 사유 입력 받을 수 있음)
+            setCampaign({...campaign, status: 'rejected'});
+            // 실제 API 호출 코드 추가
+            console.log('캠페인 반려됨');
+        } else if (action === 'pause') {
+            setCampaign({...campaign, status: 'paused'});
+            // 실제 API 호출 코드 추가
+            console.log('캠페인 중단됨');
+        } else if (action === 'resume') {
+            setCampaign({...campaign, status: 'active'});
+            // 실제 API 호출 코드 추가
+            console.log('캠페인 재개됨');
+        }
     };
 
-    const handleStatusChange = (newStatus) => {
-        setCampaign({...campaign, status: newStatus});
-    };
-
-    const handleCampaignAction = (action) => {
-        // 캠페인 승인, 반려, 중단, 재개 등의 액션 처리
-        console.log(`Campaign ${action} action triggered`);
-    };
-
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
     };
 
-    // 샘플 데이터
-    const csItems = [
-        {id: 'CS001', user: '김고객', question: '제품 배송일이 언제인가요?', date: '2025-05-03', status: '대기중'},
-        {id: 'CS002', user: '이용자', question: '옵션 변경이 가능한가요?', date: '2025-05-04', status: '대기중'},
-        {id: 'CS003', user: '박체험', question: '리뷰 작성 기한이 어떻게 되나요?', date: '2025-05-04', status: '대기중'},
-    ];
-
-    const receiptProofs = [
-        {id: 'RP001', user: '김구매', date: '2025-05-02', status: '대기중', imageUrl: '/images/receipt1.jpg'},
-        {id: 'RP002', user: '이증빙', date: '2025-05-03', status: '대기중', imageUrl: '/images/receipt2.jpg'},
-    ];
-
-    const reviewProofs = [
-        {
-            id: 'RV001',
-            user: '박리뷰',
-            date: '2025-05-03',
-            status: '대기중',
-            platform: '네이버',
-            linkUrl: 'https://example.com/review1'
-        },
-        {
-            id: 'RV002',
-            user: '최체험',
-            date: '2025-05-04',
-            status: '대기중',
-            platform: '인스타그램',
-            linkUrl: 'https://example.com/review2'
-        },
-    ];
-
-    const reservations = [
-        {id: '1', name: '김예약', email: 'kim@example.com', phone: '010-1234-5678', option: '블랙', date: '2025-05-01'},
-        {id: '2', name: '이신청', email: 'lee@example.com', phone: '010-2345-6789', option: '화이트', date: '2025-05-01'},
-        {id: '3', name: '박참여', email: 'park@example.com', phone: '010-3456-7890', option: '블루', date: '2025-05-02'},
-    ];
-
+    // 캠페인 상태 전환 함수
     const toggleStatus = () => {
-        setCampaignStatus((prev) =>
-            prev === '진행 중' ? '중단' : '진행 중'
-        );
+        if (campaign.status === 'active') {
+            handleCampaignAction('pause');
+        } else {
+            handleCampaignAction('resume');
+        }
+    };
+
+    // 승인된 상태인지 확인
+    const isApproved = (status: string) => {
+        return ['active', 'completed', 'paused'].includes(status);
+    };
+
+    // 상태 표시를 위한 함수
+    const getStatusKorean = (status: string) => {
+        switch (status) {
+            case 'pending': return '검토중';
+            case 'active': return '진행중';
+            case 'completed': return '완료';
+            case 'rejected': return '반려';
+            case 'paused': return '중단';
+            default: return '';
+        }
+    };
+
+    // 상태에 따른 아이콘
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case 'pending': return <AlertCircle className="w-4 h-4 mr-1" />;
+            case 'active': return <Clock className="w-4 h-4 mr-1" />;
+            case 'completed': return <BadgeCheck className="w-4 h-4 mr-1" />;
+            case 'rejected': return <XCircle className="w-4 h-4 mr-1" />;
+            case 'paused': return <Pause className="w-4 h-4 mr-1" />;
+            default: return null;
+        }
     };
 
     return (
-        <div className="container mx-auto  ">
+        <div className="container mx-auto">
             {/* 고정 상단 캠페인 요약 헤더 */}
             <div className="fixed top-0 left-64 right-0 z-30 bg-white border-b border-gray-200 shadow-sm px-6 py-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -176,342 +409,172 @@ export default function CampaignDetailPage() {
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                             {/* 상태 뱃지 */}
                             <span className={`
-                            inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            ${campaign.status === '진행 중' ? 'bg-emerald-100 text-emerald-800' :
-                                campaign.status === '예정' ? 'bg-blue-100 text-blue-800' :
-                                    campaign.status === '중단' ? 'bg-rose-100 text-rose-800' :
-                                        'bg-gray-100 text-gray-800'}
-                                      `}>
-                                        {campaign.status === '진행 중' && <Clock className="w-4 h-4 mr-1" />}
-                                                                    {campaign.status === '예정' && <CalendarDays className="w-4 h-4 mr-1" />}
-                                                                    {campaign.status === '종료' && <BadgeCheck className="w-4 h-4 mr-1" />}
-                                                                    {campaign.status === '중단' && <Pause className="w-4 h-4 mr-1" />}
-                                                                    {campaign.status}
-                                      </span>
+                                inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                ${campaign.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
+                                campaign.status === 'pending' ? 'bg-blue-100 text-blue-800' :
+                                    campaign.status === 'rejected' ? 'bg-rose-100 text-rose-800' :
+                                        campaign.status === 'paused' ? 'bg-amber-100 text-amber-800' :
+                                            'bg-gray-100 text-gray-800'}
+                            `}>
+                                {getStatusIcon(campaign.status)}
+                                {getStatusKorean(campaign.status)}
+                            </span>
 
-                                                                {/* 날짜 */}
-                                                                <span className="text-gray-500">
-                                        {campaign.startDate} ~ {campaign.endDate}
-                                      </span>
+                            {/* 날짜 */}
+                            {isApproved(campaign.status) && (
+                                <span className="text-gray-500">
+                                    {campaign.startDate} ~ {campaign.endDate}
+                                </span>
+                            )}
                         </div>
                     </div>
 
-                    {/* 오른쪽: 캠페인 상태 토글 버튼 */}
+                    {/* 오른쪽: 캠페인 상태에 따른 버튼 영역 */}
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={toggleStatus}
-                            className={`text-sm px-4 py-2 rounded-md text-white flex items-center gap-1.5
-                            ${campaign.status === '진행 중'
-                                                        ? 'bg-rose-500 hover:bg-rose-600'
-                                                        : 'bg-emerald-500 hover:bg-emerald-600'}
-                          `}
-                                                >
-                            {campaign.status === '진행 중' ? <Pause size={16} /> : <Play size={16} />}
-                            {campaign.status === '진행 중' ? '캠페인 중단' : '캠페인 실행'}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* 대시보드 요약 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-6 pt-[90px]">
-            <StatCard
-                title="오늘 신청 수"
-                value="5건"
-                icon={<FilePlus2 size={20} />}
-                color="orange"
-            />
-            <StatCard
-                title="오늘 모집률"
-                value="50%"
-                icon={<TrendingUp size={20} />}
-                color="blue"
-            />
-            <StatCard
-                title="CS 답변 대기"
-                value="24건"
-                icon={<MessageCircle size={20} />}
-                color="red"
-            />
-            <StatCard
-                title="구매 승인 대기"
-                value="30건"
-                icon={<ReceiptText size={20} />}
-                color="yellow"
-            />
-            <StatCard
-                title="리뷰 승인 대기"
-                value="15건"
-                icon={<Clock size={20} />}
-                color="purple"
-            />
-            </div>
-
-            {/* 캠페인 기본 정보 카드 */}
-            <CampaignInfoCard campaign={campaign} />
-
-            {/* 증빙 목록 탭 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-                <div className="px-6 pt-6">
-                    <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-4">
-                        <ReceiptText className="w-5 h-5 mr-2 text-indigo-600" />
-                        증빙 목록
-                    </h2>
-                </div>
-                <div className="flex bg-white rounded-t-lg overflow-hidden px-6">
-                    <button
-                        className={clsx(
-                            'flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors',
-                            activeTab === 'receipt'
-                                ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        {campaign.status === 'pending' ? (
+                            // 검토중 상태일 때 승인/반려 버튼
+                            <>
+                                <button
+                                    onClick={() => handleCampaignAction('approve')}
+                                    className="text-sm px-4 py-2 rounded-md text-white flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600"
+                                >
+                                    <CheckCircle2 size={16} />
+                                    캠페인 승인
+                                </button>
+                                <button
+                                    onClick={() => handleCampaignAction('reject')}
+                                    className="text-sm px-4 py-2 rounded-md text-white flex items-center gap-1.5 bg-rose-500 hover:bg-rose-600"
+                                >
+                                    <XCircle size={16} />
+                                    캠페인 반려
+                                </button>
+                            </>
+                        ) : (
+                            // 승인 또는 다른 상태일 때 기존 버튼
+                            campaign.status !== 'rejected' && (
+                                <button
+                                    onClick={toggleStatus}
+                                    className={`text-sm px-4 py-2 rounded-md text-white flex items-center gap-1.5
+                                        ${campaign.status === 'active'
+                                        ? 'bg-amber-500 hover:bg-amber-600'
+                                        : 'bg-emerald-500 hover:bg-emerald-600'}
+                                    `}
+                                >
+                                    {campaign.status === 'active' ? <Pause size={16} /> : <Play size={16} />}
+                                    {campaign.status === 'active' ? '캠페인 중단' : '캠페인 실행'}
+                                </button>
+                            )
                         )}
-                        onClick={() => setActiveTab('receipt')}
-                    >
-                        구매 영수증 증빙
-                    </button>
-                    <button
-                        className={clsx(
-                            'flex items-center px-4 py-3 bg-gray-100 text-sm rounded-t-lg font-medium transition-colors',
-                            activeTab === 'review'
-                                ? 'text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                        )}
-                        onClick={() => setActiveTab('review')}
-                    >
-                        리뷰 증빙
-                    </button>
-                </div>
-
-                <div className="px-6 pb-6 border rounded-xl mx-6 mb-6">
-                    {/* 필터 영역 */}
-                    <div className="py-4">
-                        <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-                            {/* 상태 필터 */}
-                            <div className="flex items-center whitespace-nowrap">
-                                <select
-                                    className="h-9 bg-white border border-gray-300 text-gray-700 text-sm rounded-md px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-24"
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                >
-                                    <option value="">전체</option>
-                                    <option value="pending">대기중</option>
-                                    <option value="approved">승인됨</option>
-                                    <option value="rejected">반려됨</option>
-                                </select>
-                            </div>
-
-                            {/* 검색 필드 */}
-                            <div className="flex items-center gap-2">
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="회원명 검색"
-                                        value={searchText}
-                                        onChange={(e) => setSearchText(e.target.value)}
-                                        className="h-9 w-[500px] px-2 pl-7 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                                    />
-                                    <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
-                                </div>
-                                {/* 검색 버튼 */}
-                                <button
-                                    className="h-9 px-3 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors shadow-sm whitespace-nowrap flex items-center"
-                                    onClick={handleSearch}
-                                >
-                                    검색
-                                </button>
-                                {/* 초기화 버튼 */}
-                                <button
-                                    className="h-9 px-3 border border-gray-300 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap"
-                                    onClick={() => {
-                                        setActivePeriod('1m');
-                                        const endDate = new Date();
-                                        const startDate = new Date();
-                                        startDate.setMonth(startDate.getMonth() - 1);
-                                        setDateRange([startDate, endDate]);
-                                        setStatusFilter('');
-                                        setSearchText('');
-                                    }}
-                                >
-                                    <RefreshCw className="w-3 h-3 mr-1" />
-                                    초기화
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 테이블 구조 - OptionTable과 동일한 스타일 적용 */}
-                    <div className="rounded-xl overflow-hidden border border-gray-200">
-                        <table className="w-full table-fixed text-sm text-gray-900 border-collapse">
-                            <thead className="bg-gray-100 text-xs font-semibold text-gray-600 sticky top-0 z-10">
-                            <tr className="border-b">
-                                <th className="px-4 py-2 text-left w-[30%]">회원</th>
-                                <th className="px-4 py-2 text-left w-[20%]">날짜</th>
-                                <th className="px-4 py-2 text-left w-[15%]">상태</th>
-                                <th className="px-4 py-2 text-left w-[20%]">
-                                    {activeTab === 'receipt' ? '이미지' : '플랫폼'}
-                                </th>
-                                <th className="px-4 py-2 text-right w-[15%]">액션</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {(activeTab === 'receipt' ? receiptProofs : reviewProofs).map((proof) => (
-                                <tr key={proof.id} className="hover:bg-gray-50 border-b">
-                                    <td className="px-4 py-3 text-left">{proof.user}</td>
-                                    <td className="px-4 py-3 text-left">{proof.date}</td>
-                                    <td className="px-4 py-3 text-left">
-                                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-amber-100 text-amber-800">
-                                        {proof.status}
-                                      </span>
-                                    </td>
-                                    <td className="px-4 py-3 text-left text-blue-600 hover:underline">
-                                        {activeTab === 'receipt' ? '이미지 보기' : proof.platform}
-                                    </td>
-                                    <td className="px-4 py-3 text-right space-x-2">
-                                        <button className="text-green-600 hover:text-green-900 mr-3">승인</button>
-                                        <button className="text-red-600 hover:text-red-900">반려</button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* 페이지네이션*/}
-                    <div className="flex items-center justify-center mt-4">
-                        <div className="flex space-x-1">
-                            <button className="px-3 py-2 border border-gray-300 bg-indigo-600 text-sm font-medium rounded-md text-white hover:bg-indigo-700">
-                                1
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* 예약자 리스트 */}
-            <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
-                <div className="p-5">
-                    <div className="flex justify-between items-center mb-5">
-                        <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                            <Users className="w-5 h-5 mr-2 text-blue-600"/>
-                            예약자 리스트
-                        </h2>
-                    </div>
-
-                    {/* 필터 영역 */}
-                    <div className="mb-6 border border-gray-100 rounded-lg p-4 bg-gray-50">
-                        <div className="flex flex-wrap items-center gap-3">
-                            {/* 상태 필터 */}
-                            <div className="flex items-center whitespace-nowrap">
-                                <select
-                                    className="h-10 bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 w-28 shadow-sm"
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                >
-                                    <option value="name">이름</option>
-                                    <option value="pending">이메일</option>
-                                </select>
-                            </div>
-
-                            {/* 검색 필드 */}
-                            <div className="flex-1 flex items-center gap-2">
-                                <div className="relative flex-1 max-w-2xl">
-                                    <input
-                                        type="text"
-                                        placeholder="검색어를 입력하세요"
-                                        value={searchText}
-                                        onChange={(e) => setSearchText(e.target.value)}
-                                        className="h-10 w-full px-3 pl-9 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
-                                    />
-                                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                </div>
-
-                                {/* 검색 버튼 */}
-                                <button
-                                    className="h-10 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm whitespace-nowrap flex items-center"
-                                    onClick={handleSearch}
-                                >
-                                    검색
-                                </button>
-
-                                {/* 초기화 버튼 */}
-                                <button
-                                    className="h-10 px-4 border border-gray-200 bg-white text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all duration-200 flex items-center whitespace-nowrap shadow-sm"
-                                    onClick={() => {
-                                        setActivePeriod('1m');
-                                        const endDate = new Date();
-                                        const startDate = new Date();
-                                        startDate.setMonth(startDate.getMonth() - 1);
-                                        setDateRange([startDate, endDate]);
-                                        setStatusFilter('');
-                                        setSearchText('');
-                                    }}
-                                >
-                                    <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-                                    초기화
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 예약자 테이블 */}
-                    <div className="overflow-hidden rounded-lg border border-gray-100 shadow-sm">
-                        <div className="overflow-x-auto">
-                            <table className="w-full table-auto text-sm text-gray-800 border-collapse">
-                                <thead>
-                                <tr className="bg-gradient-to-r from-gray-50 to-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">이름</th>
-                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">이메일</th>
-                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">연락처</th>
-                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">옵션</th>
-                                    <th className="px-4 py-3.5 text-left border-b border-gray-200">예약일</th>
-                                    <th className="px-4 py-3.5 text-right border-b border-gray-200">액션</th>
-                                </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                {reservations.map((reservation) => (
-                                    <tr key={reservation.id} className="hover:bg-blue-50 transition-colors duration-150">
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm font-medium text-gray-800">{reservation.name}</td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.email}</td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.phone}</td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.option}</td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-sm text-gray-600">{reservation.date}</td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-blue-600 hover:text-blue-800 transition-colors px-3 py-1.5 rounded-md hover:bg-blue-50">상세보기</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* 페이지네이션 */}
-                        <div className="flex items-center justify-center p-4 border-t border-gray-100 bg-gray-50">
-                            <div className="flex space-x-1">
-                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
-                                    이전
-                                </button>
-                                <button className="px-3 py-1.5 border border-transparent bg-blue-600 text-sm font-medium rounded-md text-white hover:bg-blue-700 transition-colors">
-                                    1
-                                </button>
-                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
-                                    2
-                                </button>
-                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
-                                    3
-                                </button>
-                                <button className="px-3 py-1.5 border border-gray-200 bg-white text-sm font-medium rounded-md text-gray-500 hover:bg-gray-50 transition-colors">
-                                    다음
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+            {/* 캠페인 상태에 따른 콘텐츠 표시 */}
+            <div className="pt-[80px]">
+                {campaign.status !== 'pending' && campaign.status !== 'rejected' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-6">
+                    <StatCard
+                        title="오늘 신청 수"
+                        value={`${campaign.todayRecruits}건`}
+                        icon={<FilePlus2 size={20} />}
+                        color="orange"
+                    />
+                    <StatCard
+                        title="오늘 모집률"
+                        value={`${Math.round((campaign.currentRecruits / campaign.totalRecruits) * 100)}%`}
+                        icon={<TrendingUp size={20} />}
+                        color="blue"
+                    />
+                    <StatCard
+                        title="CS 답변 대기"
+                        value={`${campaign.csWaiting}건`}
+                        icon={<MessageCircle size={20} />}
+                        color="red"
+                    />
+                    <StatCard
+                        title="구매 승인 대기"
+                        value={`${campaign.receiptProofs.waiting}건`}
+                        icon={<ReceiptText size={20} />}
+                        color="yellow"
+                    />
+                    <StatCard
+                        title="리뷰 승인 대기"
+                        value={`${campaign.reviewProofs.waiting}건`}
+                        icon={<Clock size={20} />}
+                        color="purple"
+                    />
                 </div>
+            )}
+                {/* 캠페인 기본 정보 카드는 항상 표시 */}
+                <CampaignInfoCard
+                    campaign={campaign}
+                    isEditable={campaign.status === 'pending'}
+                />
+
+                {campaign.status === 'pending' ? (
+                    /* 검토중일 때 안내 메시지 */
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-blue-100 rounded-full p-3">
+                                <AlertCircle className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-medium text-blue-800">검토 진행 중</h3>
+                                <p className="mt-1 text-blue-700">
+                                    이 캠페인은 현재 검토 중입니다. 승인 후에 아래 기능들이 활성화됩니다:
+                                </p>
+                                <ul className="mt-3 space-y-2">
+                                    <li className="flex items-center text-blue-700">
+                                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                                        캠페인 현황 대시보드
+                                    </li>
+                                    <li className="flex items-center text-blue-700">
+                                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                                        상세 증빙 목록 관리
+                                    </li>
+                                    <li className="flex items-center text-blue-700">
+                                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                                        예약자 리스트 관리
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                ) : campaign.status === 'rejected' ? (
+                    /* 반려되었을 때 안내 메시지 */
+                    <div className="bg-rose-50 border border-rose-200 rounded-lg p-6 my-6">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-rose-100 rounded-full p-3">
+                                <XCircle className="h-6 w-6 text-rose-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-medium text-rose-800">캠페인 반려됨</h3>
+                                <p className="mt-1 text-rose-700">
+                                    이 캠페인은 관리자에 의해 반려되었습니다. 아래 사유를 확인하고 수정 후 다시 검토를 요청해주세요.
+                                </p>
+                                <div className="mt-3 p-3 bg-white rounded border border-rose-200">
+                                    <p className="text-gray-700">반려 사유: 상품 정보가 불충분합니다. 상세 스펙과 이미지를 추가해주세요.</p>
+                                </div>
+                                <button className="mt-4 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">
+                                    수정하여 재검토 요청
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* 승인된 상태일 때 (active, completed, paused) */
+                    <>
+                        {/* 증빙 목록 */}
+                        <ProofList />
+
+                        {/* 예약자 리스트 */}
+                        <ReservationList />
+                    </>
+                )}
             </div>
         </div>
-);
+    );
 }
-
 
 // 통계 카드 컴포넌트
 function StatCard({ title, value, icon, color }: { title: string; value: string; icon: React.ReactNode; color: string }) {

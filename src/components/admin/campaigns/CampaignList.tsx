@@ -22,7 +22,7 @@ import {
 import CampaignStatusBadge from './CampaignStatusBadge';
 
 // 캠페인 상태 타입
-type CampaignStatus = 'draft' | 'pending' | 'active' | 'completed' | 'rejected' | 'all';
+type CampaignStatus = 'pending' | 'active' | 'completed' | 'rejected' | 'all';
 
 // 캠페인 데이터 타입
 interface Campaign {
@@ -139,7 +139,7 @@ const mockCampaigns: Campaign[] = [
     {
         id: 'camp-009',
         title: '신상 슈즈 체험단',
-        status: 'draft',
+        status: 'completed',
         company: '패션마트',
         deadline: '2025-06-15',
         applicants: 0,
@@ -151,12 +151,24 @@ const mockCampaigns: Campaign[] = [
     {
         id: 'camp-010',
         title: '유기농 스킨케어 체험단',
-        status: 'draft',
+        status: 'completed',
         company: '유기농화장품',
         deadline: '2025-06-20',
         applicants: 0,
-        selectedReviewers: 10,
-        completedReviews: 0,
+        selectedReviewers: 100,
+        completedReviews: 50,
+        createdAt: '2025-04-25',
+        isActive: false,
+    },
+    {
+        id: 'camp-011',
+        title: '여름 신상품 체험단 모집',
+        status: 'active',
+        company: '화장품몰',
+        deadline: '2025-05-15',
+        applicants: 0,
+        selectedReviewers: 50,
+        completedReviews: 20,
         createdAt: '2025-04-25',
         isActive: false,
     },
@@ -188,7 +200,7 @@ export default function CampaignList() {
 
     // 페이지네이션 상태
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(7);
+    const [itemsPerPage] = useState(10);
 
     // 데이터 로딩
     useEffect(() => {
@@ -318,7 +330,6 @@ export default function CampaignList() {
     const getStatusCounts = () => {
         const counts = {
             all: campaigns.length,
-            draft: 0,
             pending: 0,
             active: 0,
             completed: 0,
@@ -375,16 +386,6 @@ export default function CampaignList() {
                     onClick={() => setStatusFilter('all')}
                 >
                     전체 ({statusCounts.all})
-                </button>
-                <button
-                    className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-                        statusFilter === 'draft'
-                            ? 'bg-blue-50 text-blue-600   border-b-2 border-blue-600 '
-                            : 'text-gray-500  hover:text-gray-700 '
-                    }`}
-                    onClick={() => setStatusFilter('draft')}
-                >
-                    임시저장 ({statusCounts.draft})
                 </button>
                 <button
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
@@ -524,10 +525,10 @@ export default function CampaignList() {
                             <th className="px-6 py-3">캠페인</th>
                             <th className="px-6 py-3">상태</th>
                             <th className="px-6 py-3">업체</th>
-                            <th className="px-6 py-3">리뷰어</th>
-                            <th className="px-6 py-3">마감일</th>
+                            <th className="px-6 py-3">진행률</th>
+                            <th className="px-6 py-3">시작일</th>
+                            <th className="px-6 py-3">종료일</th>
                             <th className="px-6 py-3">활성화</th>
-                            <th className="px-6 py-3">작업</th>
                         </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 ">
@@ -553,9 +554,6 @@ export default function CampaignList() {
                                                         {campaign.title}
                                                     </Link>
                                                 </div>
-                                                <div className="text-xs text-gray-500  mt-1">
-                                                    ID: {campaign.id}
-                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -569,13 +567,8 @@ export default function CampaignList() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
-                                            <div className="flex items-center text-sm text-gray-900 ">
-                                                <Users size={14} className="mr-1 text-gray-500 " />
-                                                <span className="font-medium">{campaign.applicants}</span>
-                                                <span className="text-gray-500  mx-1">명 신청</span>
-                                            </div>
-                                            <div className="flex items-center mt-1">
-                                                <div className="w-full bg-gray-200  rounded-full h-1.5">
+                                            <div className="flex items-center">
+                                                <div className="w-[80px] bg-gray-200  rounded-full h-1.5">
                                                     <div
                                                         className="bg-blue-600 h-1.5 rounded-full"
                                                         style={{
@@ -597,25 +590,15 @@ export default function CampaignList() {
                                         <div className="flex flex-col">
                                             <div className="flex items-center text-sm text-gray-900 ">
                                                 <Calendar size={14} className="mr-1 text-gray-500 " />
-                                                <span>{formatDate(campaign.deadline)}</span>
+                                                <span>{formatDate(campaign.createdAt)}</span>
                                             </div>
-                                            <div className="mt-1">
-                                                {campaign.status !== 'completed' && campaign.status !== 'rejected' && (
-                                                    <span
-                                                        className={`text-xs ${
-                                                            getDaysRemaining(campaign.deadline) < 3
-                                                                ? 'text-red-500 '
-                                                                : getDaysRemaining(campaign.deadline) < 7
-                                                                    ? 'text-amber-500 '
-                                                                    : 'text-gray-500 '
-                                                        }`}
-                                                    >
-                                                        <Clock size={12} className="inline mr-1" />
-                                                        {getDaysRemaining(campaign.deadline) > 0
-                                                            ? `${getDaysRemaining(campaign.deadline)}일 남음`
-                                                            : '마감됨'}
-                                                    </span>
-                                                )}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center text-sm text-gray-900 ">
+                                                <Calendar size={14} className="mr-1 text-gray-500 " />
+                                                <span>{formatDate(campaign.deadline)}</span>
                                             </div>
                                         </div>
                                     </td>
@@ -628,81 +611,6 @@ export default function CampaignList() {
                                         >
                                             {campaign.isActive ? <Eye size={18} /> : <EyeOff size={18} />}
                                         </button>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                                        <div className="relative">
-                                            <button
-                                                onClick={() => toggleDropdown(campaign.id)}
-                                                className="text-gray-500  hover:text-gray-700  focus:outline-none"
-                                            >
-                                                <MoreHorizontal size={20} />
-                                            </button>
-                                            {dropdownOpen[campaign.id] && (
-                                                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white  ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 ">
-                                                    <div className="py-1">
-                                                        <Link
-                                                            href={`/admin/campaigns/${campaign.id}`}
-                                                            className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
-                                                        >
-                                                            상세 보기
-                                                        </Link>
-                                                        {(campaign.status === 'draft' || campaign.status === 'rejected') && (
-                                                            <Link
-                                                                href={`/admin/campaigns/${campaign.id}/edit`}
-                                                                className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
-                                                            >
-                                                                수정하기
-                                                            </Link>
-                                                        )}
-                                                        {campaign.status === 'active' && (
-                                                            <Link
-                                                                href={`/admin/campaigns/${campaign.id}/reviewers`}
-                                                                className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
-                                                            >
-                                                                리뷰어 관리
-                                                            </Link>
-                                                        )}
-                                                    </div>
-                                                    <div className="py-1">
-                                                        {campaign.status === 'draft' && (
-                                                            <>
-                                                                <button
-                                                                    className="block w-full text-left px-4 py-2 text-sm text-blue-600  hover:bg-gray-100 "
-                                                                >
-                                                                    제출하기
-                                                                </button>
-                                                                <button
-                                                                    className="block w-full text-left px-4 py-2 text-sm text-red-600  hover:bg-gray-100 "
-                                                                >
-                                                                    삭제하기
-                                                                </button>
-                                                            </>
-                                                        )}
-                                                        {campaign.status === 'pending' && (
-                                                            <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
-                                                            >
-                                                                검토 요청
-                                                            </button>
-                                                        )}
-                                                        {campaign.status === 'active' && (
-                                                            <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-amber-600  hover:bg-gray-100 "
-                                                            >
-                                                                마감하기
-                                                            </button>
-                                                        )}
-                                                        {campaign.status === 'completed' && (
-                                                            <button
-                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 "
-                                                            >
-                                                                보고서 다운로드
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
                                     </td>
                                 </tr>
                             ))

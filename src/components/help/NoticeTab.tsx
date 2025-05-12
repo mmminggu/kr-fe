@@ -146,46 +146,6 @@ export default function NoticeTab({ id, onBack }: AnnouncementDetailProps) {
                                 </div>
                             </div>
 
-                            {/*<div className="bg-gray-100 p-4 border-b flex flex-col gap-3">
-                                 상단 : 제목 + 목록버튼
-                                <div className="flex justify-between items-start">
-                                    <div className="flex items-center gap-2">
-                                        {selectedNotice.isImportant && (
-                                            <span className="inline-block bg-red-200 text-red-800 text-xs font-semibold px-2 py-1 rounded-full">
-                                                중요
-                                            </span>
-                                        )}
-                                        <h2 className="text-xl font-bold leading-tight">
-                                            {selectedNotice.title}
-                                        </h2>
-                                    </div>
-                                    <Button
-                                        onClick={handleBackToList}
-                                        size="sm"
-                                        className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 rounded-lg px-4 py-2"
-                                    >
-                                        목록
-                                    </Button>
-                                </div>
-
-                                 하단 : 작성일 + 조회수
-                                <div className="flex items-center gap-6 text-sm text-gray-600">
-                                    <div className="flex items-center">
-                                        <Calendar className="h-4 w-4 mr-1 text-indigo-500" />
-                                        {selectedNotice.date}
-                                    </div>
-                                    <div className="flex items-center">
-                                        <Eye className="h-4 w-4 mr-1 text-indigo-500" />
-                                        조회 {selectedNotice.views}
-                                    </div>
-                                </div>
-                            </div>
-*/}
-
-                            {/* 상세 내용 */}
-                           {/* <div className="p-6 min-h-[300px] whitespace-pre-line text-gray-700 leading-relaxed">
-                                {selectedNotice.content}
-                            </div>*/}
                             {/* 본문 */}
                             <div className="min-h-[200px] whitespace-pre-line text-gray-700">{selectedNotice.content}</div>
 

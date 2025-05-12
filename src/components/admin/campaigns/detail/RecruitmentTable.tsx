@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, CalendarDays, Pencil, Plus, Trash2, Undo2, X, AlertCircle } from 'lucide-react';
+import {Check, CalendarDays, Pencil, Plus, Trash2, Undo2, X, AlertCircle, Users} from 'lucide-react';
 
 export interface RecruitmentDay {
     date: string; // YYYY-MM-DD 형식
@@ -22,8 +22,27 @@ function RecruitmentRow({ day, isCurrentDayOrBefore }: { day: RecruitmentDay; is
     return (
         <tr className={`hover:bg-gray-50 border-b ${isToday ? 'bg-blue-50' : ''}`}>
             <td className="px-4 py-3 text-left">{formatDate(day.date)}</td>
-            <td className="px-4 py-3 text-center">{day.quota}명</td>
-            <td className="px-4 py-3 text-left">{day.description || '-'}</td>
+            <td className="px-4 py-3 text-left">{day.quota} 명</td>
+            <td className="px-4 py-3 text-left align-middle">
+                <div className="flex items-center gap-2">
+                    <Users size={14} className="text-gray-500 " />
+                    <div className="relative flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                            className="absolute top-0 left-0 h-full rounded-full bg-indigo-500"
+                            style={{
+                                width: `${
+                                    day.quota
+                                        ? ((day.quota-2) / day.quota) * 100
+                                        : 0
+                                }%`,
+                            }}
+                        ></div>
+                    </div>
+                    <span className="text-xs text-gray-600 whitespace-nowrap">
+                        {day.quota - 2}/{day.quota || 0}명
+                    </span>
+                </div>
+            </td>
             <td className="px-4 py-3 text-right space-x-2">
                 {isCurrentDayOrBefore && (
                     <span className="text-xs text-gray-400 flex items-center justify-end">
@@ -63,7 +82,7 @@ function RecruitmentInputRow({
                     className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                 />
             </td>
-            <td className="px-4 py-3 text-center">
+            <td className="px-4 py-3 text-left">
                 <input
                     disabled={isDeleted || isCurrentDayOrBefore}
                     type="number"
@@ -74,14 +93,7 @@ function RecruitmentInputRow({
                 />
             </td>
             <td className="px-4 py-3 text-left">
-                <input
-                    disabled={isDeleted || isCurrentDayOrBefore}
-                    type="text"
-                    value={day.description || ''}
-                    onChange={(e) => onChange({ ...day, description: e.target.value })}
-                    className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                    placeholder="모집 관련 비고 사항"
-                />
+
             </td>
             <td className="px-4 py-3 text-right space-x-2">
                 {isCurrentDayOrBefore ? (
@@ -202,16 +214,15 @@ export default function RecruitmentTable({ initialDays }: { initialDays: Recruit
     };
 
     return (
-        <section className="">
-            <p className="text-sm text-gray-500 mb-4">날짜별로 모집 인원을 등록하거나 수정할 수 있습니다.</p>
+        <section className="pt-6">
             <div className="rounded-xl overflow-hidden border border-gray-200">
                 <div className="max-h-[250px] overflow-y-auto">
                     <table className="w-full table-fixed text-sm text-gray-900 border-collapse">
-                        <thead className="bg-gray-100 text-xs font-semibold text-gray-600 sticky top-0 z-10">
+                        <thead className="bg-gradient-to-r from-gray-50 to-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         <tr className="border-b">
                             <th className="px-4 py-2 text-left w-[30%]">모집일</th>
-                            <th className="px-4 py-2 text-left w-[8rem]">인원</th>
-                            <th className="px-4 py-2 text-left w-[8rem]">비고</th>
+                            <th className="px-4 py-2 text-left w-[8rem]">모집 인원</th>
+                            <th className="px-4 py-2 text-left w-[35%]">모집 현황</th>
                             <th className="px-4 py-2 text-right w-[6rem]">
                                 <div className="flex justify-end gap-2">
                                     {isEditMode ? (

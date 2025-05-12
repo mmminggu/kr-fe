@@ -1,61 +1,51 @@
 import React from 'react';
-import {
-    Clock,
-    CheckCircle2,
-    XCircle,
-    AlertCircle,
-    PlayCircle
-} from 'lucide-react';
-
-type CampaignStatus = 'draft' | 'pending' | 'active' | 'completed' | 'rejected';
+import { Clock, CalendarDays, BadgeCheck, XCircle, Pause, AlertCircle } from 'lucide-react';
 
 interface CampaignStatusBadgeProps {
-    status: CampaignStatus;
+    status: 'pending' | 'active' | 'completed' | 'rejected' | 'paused' | string;
+    className?: string;
 }
 
-export default function CampaignStatusBadge({ status }: CampaignStatusBadgeProps) {
-    // 상태별 스타일 및 텍스트 매핑
-    const statusConfig = {
-        draft: {
-            bgColor: 'bg-gray-100 ',
-            textColor: 'text-gray-800 ',
-            icon: <Clock size={14} className="mr-1" />,
-            text: '임시저장',
-        },
-        pending: {
-            bgColor: 'bg-amber-100 ',
-            textColor: 'text-amber-800 ',
-            icon: <AlertCircle size={14} className="mr-1" />,
-            text: '검토중',
-        },
-        active: {
-            bgColor: 'bg-green-100 ',
-            textColor: 'text-green-800 ',
-            icon: <PlayCircle size={14} className="mr-1" />,
-            text: '진행중',
-        },
-        completed: {
-            bgColor: 'bg-blue-100 ',
-            textColor: 'text-blue-800 ',
-            icon: <CheckCircle2 size={14} className="mr-1" />,
-            text: '완료',
-        },
-        rejected: {
-            bgColor: 'bg-red-100 ',
-            textColor: 'text-red-800 ',
-            icon: <XCircle size={14} className="mr-1" />,
-            text: '반려',
-        },
-    };
+export default function CampaignStatusBadge({ status, className = '' }: CampaignStatusBadgeProps) {
+    let color = '';
+    let icon = null;
+    let label = '';
 
-    const { bgColor, textColor, icon, text } = statusConfig[status];
+    switch (status) {
+        case 'pending':
+            color = 'bg-blue-100 text-blue-800';
+            icon = <AlertCircle size={14} className="mr-1" />;
+            label = '검토중';
+            break;
+        case 'active':
+            color = 'bg-emerald-100 text-emerald-800';
+            icon = <Clock size={14} className="mr-1" />;
+            label = '진행중';
+            break;
+        case 'completed':
+            color = 'bg-gray-100 text-gray-800';
+            icon = <BadgeCheck size={14} className="mr-1" />;
+            label = '완료';
+            break;
+        case 'rejected':
+            color = 'bg-rose-100 text-rose-800';
+            icon = <XCircle size={14} className="mr-1" />;
+            label = '반려';
+            break;
+        case 'paused':
+            color = 'bg-amber-100 text-amber-800';
+            icon = <Pause size={14} className="mr-1" />;
+            label = '중단';
+            break;
+        default:
+            color = 'bg-gray-100 text-gray-800';
+            label = status;
+    }
 
     return (
-        <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
-        >
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${color} ${className}`}>
       {icon}
-            {text}
+            {label}
     </span>
     );
 }
