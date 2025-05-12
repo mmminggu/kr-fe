@@ -103,6 +103,7 @@ export default function AdminSidebar() {
                 { name: '문의', href: '/admin/customer-service/inquiries' },
             ],
         },
+        { name: '광고 견적', icon: <FileCheck size={20} />, href: '/admin/adQuotation' },
         {
             name: '정산 관리',
             icon: <DollarSign size={20} />,
@@ -113,7 +114,6 @@ export default function AdminSidebar() {
                 { name: '캠페인 입출금 내역', href: '/admin/settlements/campaign' },
             ],
         },
-        { name: '광고 견적', icon: <FileCheck size={20} />, href: '/admin/adQuotation' },
         { name: '알림', icon: <Bell size={20} />, href: '/admin/notifications' },
     ];
 
