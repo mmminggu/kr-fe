@@ -15,6 +15,7 @@ import {
     MoreVertical,
     Trash2,
     FileDown,
+    User
 } from 'lucide-react';
 
 export default function Notifications(){
@@ -26,6 +27,12 @@ export default function Notifications(){
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10; // 페이지 당 알림 수
 
+    // 관리자 정보 (실제로는 로그인 정보를 통해 가져옴)
+    const currentAdmin = {
+        id: 1,
+        name: '관리자1'
+    };
+
     // 알림 데이터 상태 (실제로는 API에서 가져옴)
     const [notifications, setNotifications] = useState([
         {
@@ -35,6 +42,8 @@ export default function Notifications(){
             message: '[캠페인1] 고객 CS가 접수되었습니다.',
             timestamp: '2025-05-12T10:30:00',
             read: false,
+            readBy: null,
+            readAt: null,
         },
         {
             id: 2,
@@ -43,6 +52,8 @@ export default function Notifications(){
             message: '[캠페인2] 업체 CS가 접수되었습니다.',
             timestamp: '2025-05-12T09:15:00',
             read: false,
+            readBy: null,
+            readAt: null,
         },
         {
             id: 3,
@@ -51,6 +62,8 @@ export default function Notifications(){
             message: '"화장품 테스터" 캠페인 마감이 2일 남았습니다.',
             timestamp: '2025-05-12T07:45:00',
             read: false,
+            readBy: null,
+            readAt: null,
         },
         {
             id: 4,
@@ -59,6 +72,8 @@ export default function Notifications(){
             message: '"헬스케어 제품" 캠페인이 예산 초과로 자동 중단되었습니다.',
             timestamp: '2025-05-11T17:22:00',
             read: true,
+            readBy: { id: 2, name: '관리자2' },
+            readAt: '2025-05-11T17:30:00',
         },
         {
             id: 5,
@@ -67,6 +82,8 @@ export default function Notifications(){
             message: '"헬스케어 제품" 캠페인이 시작되었습니다.',
             timestamp: '2025-05-11T14:10:00',
             read: false,
+            readBy: null,
+            readAt: null,
         },
         {
             id: 6,
@@ -75,35 +92,58 @@ export default function Notifications(){
             message: '"여름 의류" 캠페인 모집이 마감되었습니다.',
             timestamp: '2025-05-10T10:30:00',
             read: true,
+            readBy: { id: 3, name: '관리자3' },
+            readAt: '2025-05-10T11:45:00',
         },
     ]);
 
     // 알림 읽음 처리 함수
     const markAsRead = (id) => {
+        const now = new Date().toISOString();
         setNotifications(
             notifications.map((notification) =>
                 notification.id === id
-                    ? { ...notification, read: true }
+                    ? {
+                        ...notification,
+                        read: true,
+                        readBy: currentAdmin,
+                        readAt: now
+                    }
                     : notification
             )
         );
     };
 
     const toggleRead = (id) => {
+        const now = new Date().toISOString();
         setNotifications((prev) =>
             prev.map((n) =>
-                n.id === id ? { ...n, read: !n.read } : n
+                n.id === id
+                    ? {
+                        ...n,
+                        read: !n.read,
+                        readBy: !n.read ? currentAdmin : null,
+                        readAt: !n.read ? now : null
+                    }
+                    : n
             )
         );
     };
 
     // 모든 알림 읽음 처리 함수
     const markAllAsRead = () => {
+        const now = new Date().toISOString();
         setNotifications(
-            notifications.map((notification) => ({
-                ...notification,
-                read: true,
-            }))
+            notifications.map((notification) =>
+                notification.read
+                    ? notification
+                    : {
+                        ...notification,
+                        read: true,
+                        readBy: currentAdmin,
+                        readAt: now,
+                    }
+            )
         );
     };
 
@@ -238,7 +278,7 @@ export default function Notifications(){
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                strokeWidth={2}
+                                strokeWidth="2"
                                 d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
                             />
                         </svg>
@@ -288,12 +328,20 @@ export default function Notifications(){
                                           <span className="text-xs text-gray-500">
                                             {formatDate(notification.timestamp)}
                                           </span>
+
+                                            {/* 읽음 표시된 알림에 대한 추가 정보 표시 */}
+                                            {notification.read && notification.readBy && (
+                                                <div className="ml-3 flex items-center text-xs text-blue-500">
+                                                    <User size={12} className="mr-1 text-blue-400" />
+                                                    <span>{notification.readBy.name}님이 {formatDate(notification.readAt)} 확인</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex items-start ml-4 space-x-1">
                                     <button
-                                        onClick={() => toggleRead(notification.id)} // ✅ 여기 변경
+                                        onClick={() => toggleRead(notification.id)}
                                         className="text-gray-400 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
                                         title={notification.read ? '읽지 않음으로 표시' : '읽음으로 표시'}
                                     >
@@ -411,4 +459,3 @@ export default function Notifications(){
         </div>
     );
 };
-

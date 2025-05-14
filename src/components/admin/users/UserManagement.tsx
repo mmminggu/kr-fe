@@ -6,15 +6,19 @@ import { Button } from '@/src/components/ui/button';
 import {
     Search,
     Filter,
-    Plus,
+    Phone,
     ChevronDown,
     Calendar,
     AlertCircle,
     FileDown,
     Eye,
     EyeOff,
-    Trash,
-    Check
+    User ,
+    MapPin,
+    ExternalLink,
+    Users,
+    CreditCard,
+    Store
 } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -33,6 +37,132 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/src/components/ui/select';
+import Image from 'next/image';
+
+// 사용자별 추가 계정 정보 (모의 데이터)
+const additionalAccountsMap = {
+    "user1@example.com": [
+        {
+            id: 101,
+            storeName: "쿠팡",
+            storeLogo: "/logos/coupang.png",
+            userId: "coupang_user1",
+            userName: "사용자 1",
+            accountHolder: "사용자 1",
+            recipient: "사용자 1",
+            accountNumber: "1234567890",
+            bank: "국민은행",
+            contact: "010-1234-5678",
+            phone: "010-1234-5678",
+            receiver: "사용자 1",
+            address: "서울시 강남구 테헤란로 123, 테헤란로 아파트 1단지 207동 1045호",
+            wowMember: true,
+            emailOrPhone: "user1_coupang@example.com",
+            status: "active",
+            joinDate: "2024-05-10"
+        },
+        {
+            id: 102,
+            storeName: "네이버",
+            storeLogo: "/logos/naver.png",
+            userId: "naver_user1",
+            userName: "사용자 1",
+            accountHolder: "사용자 1",
+            recipient: "사용자 1",
+            accountNumber: "0987654321",
+            bank: "신한은행",
+            contact: "010-8765-4321",
+            phone: "010-8765-4321",
+            receiver: "사용자 1",
+            address: "서울시 강남구 역삼로 456",
+            wowMember: false,
+            emailOrPhone: "user1_naver@example.com",
+            status: "inactive",
+            joinDate: "2024-01-15"
+        }
+    ],
+    "user3@example.com": [
+        {
+            id: 301,
+            storeName: "올리브영",
+            storeLogo: "/logos/oliveyoung.jpg",
+            userId: "olive_user3",
+            userName: "사용자 3",
+            accountHolder: "사용자 3",
+            recipient: "사용자 3",
+            accountNumber: "1122334455",
+            bank: "우리은행",
+            contact: "010-2233-4455",
+            phone: "010-2233-4455",
+            receiver: "사용자 3",
+            address: "서울시 송파구 올림픽로 100",
+            wowMember: false,
+            emailOrPhone: "user3_olive@example.com",
+            status: "active",
+            joinDate: "2024-02-20"
+        }
+    ],
+    "user5@example.com": [
+        {
+            id: 501,
+            storeName: "네이버",
+            storeLogo: "/logos/naver.png",
+            userId: "11st_user5",
+            userName: "사용자 5",
+            accountHolder: "사용자 5",
+            recipient: "사용자 5",
+            accountNumber: "5544332211",
+            bank: "하나은행",
+            contact: "010-5544-3322",
+            phone: "010-5544-3322",
+            receiver: "사용자 5",
+            address: "서울시 중구 명동길 100",
+            wowMember: false,
+            emailOrPhone: "user5_11st@example.com",
+            status: "pending",
+            joinDate: "2024-04-05"
+        },
+        {
+            id: 502,
+            storeName: "올리브영",
+            storeLogo: "/logos/oliveyoung.jpg",
+            userId: "gmarket_user5",
+            userName: "사용자 5",
+            accountHolder: "사용자 5",
+            recipient: "사용자 5",
+            accountNumber: "6677889900",
+            bank: "기업은행",
+            contact: "010-6677-8899",
+            phone: "010-6677-8899",
+            receiver: "사용자 5",
+            address: "서울시 서초구 강남대로 200",
+            wowMember: false,
+            emailOrPhone: "010-5555-6666",
+            status: "active",
+            joinDate: "2023-11-10"
+        },
+        {
+            id: 503,
+            storeName: "쿠팡",
+            storeLogo: "/logos/coupang.png",
+            userId: "tmon_user5",
+            userName: "사용자 5",
+            accountHolder: "사용자 5",
+            recipient: "사용자 5",
+            accountNumber: "1357924680",
+            bank: "농협은행",
+            contact: "010-1357-9246",
+            phone: "010-1357-9246",
+            receiver: "사용자 5",
+            address: "서울시 강동구 천호대로 300",
+            wowMember: false,
+            emailOrPhone: "user5_tmon@example.com",
+            status: "suspended",
+            joinDate: "2023-12-25",
+            suspendedDate: "2024-03-15"
+        }
+    ]
+};
 
 // 사용자 상태별 배지 스타일
 const statusStyles = {
@@ -58,7 +188,7 @@ const sortOptions = [
 ];
 
 // 임시 데이터
-const mockUsers = Array.from({ length: 50 }).map((_, i) => ({
+const mockUsers = Array.from({ length: 10 }).map((_, i) => ({
     id: i + 1,
     name: `사용자 ${i + 1}`,
     email: `user${i + 1}@example.com`,
@@ -87,7 +217,9 @@ export default function UserManagement() {
     // 모달 상태
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+    const [currentUserEmail, setCurrentUserEmail] = useState('');
     const [newUser, setNewUser] = useState({
         name: '',
         email: '',
@@ -215,43 +347,20 @@ export default function UserManagement() {
         setIsDeleteDialogOpen(true);
     };
 
-    // 신규 회원 저장
-    const handleCreateUser = () => {
-        // 폼 유효성 검사
-        if (!newUser.name || !newUser.email) {
-            alert('이름과 이메일은 필수 입력 항목입니다.');
-            return;
-        }
+    // 계정 목록 모달 열기
+    const openAccountsModal = (userEmail) => {
+        setCurrentUserEmail(userEmail);
+        setIsAccountsModalOpen(true);
+    };
 
-        // 이메일 유효성 검사
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(newUser.email)) {
-            alert('유효한 이메일 형식이 아닙니다.');
-            return;
-        }
+    // 사용자에게 추가 계정이 있는지 확인
+    const hasAdditionalAccounts = (email) => {
+        return additionalAccountsMap[email] && additionalAccountsMap[email].length > 0;
+    };
 
-        // 새 회원 객체 생성
-        const newUserObject = {
-            id: users.length + 1,
-            name: newUser.name,
-            email: newUser.email,
-            gender: newUser.gender,
-            role: newUser.role,
-            status: newUser.status,
-            joinDate: new Date().toISOString().split('T')[0],
-            suspendedDate: null,
-            isActive: newUser.isActive
-        };
-
-        // 실제 구현에서는 API 호출로 저장
-        console.log('신규 회원 등록:', newUserObject);
-
-        // 상태 업데이트
-        setUsers([newUserObject, ...users]);
-        setIsCreateModalOpen(false);
-
-        // 성공 메시지
-        alert('회원이 성공적으로 등록되었습니다.');
+    // 추가 계정 수 확인
+    const getAdditionalAccountsCount = (email) => {
+        return additionalAccountsMap[email] ? additionalAccountsMap[email].length : 0;
     };
 
 
@@ -428,7 +537,7 @@ export default function UserManagement() {
                                 <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                    strokeWidth={2}
+                                    strokeWidth="2"
                                     d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
                                 />
                             </svg>
@@ -471,6 +580,7 @@ export default function UserManagement() {
                             </th>
                             <th className="px-6 py-3">이름</th>
                             <th className="px-6 py-3">이메일</th>
+                            <th className="px-6 py-3">추가계정</th>
                             <th className="px-6 py-3">성별</th>
                             <th className="px-6 py-3">회원 유형</th>
                             <th className="px-6 py-3">상태</th>
@@ -500,6 +610,20 @@ export default function UserManagement() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-500">{user.email}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        {hasAdditionalAccounts(user.email) ? (
+                                            <button
+                                                onClick={() => openAccountsModal(user.email)}
+                                                className="flex items-center gap-1 py-1 px-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+                                                title="추가 계정 보기"
+                                            >
+                                                <Users size={14} />
+                                                <span className="text-xs font-medium">{getAdditionalAccountsCount(user.email)}개</span>
+                                            </button>
+                                        ) : (
+                                            <span className="text-gray-400 text-xs"></span>
+                                        )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-500">{user.gender}</div>
@@ -685,6 +809,121 @@ export default function UserManagement() {
                     </div>
                 )}
             </div>
+
+            {/* 추가 계정 모달 */}
+            <Dialog open={isAccountsModalOpen} onOpenChange={setIsAccountsModalOpen}>
+                <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden">
+                    {/* 헤더 영역 */}
+                    <div className="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b">
+                        <h2 className="text-lg font-semibold flex items-center gap-2">
+                            <Users className="h-5 w-5" />
+                            추가 계정 목록
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-0.5">
+                            {currentUserEmail ? `${currentUserEmail} 사용자의 추가 계정 정보입니다.` : '추가 계정 정보'}
+                        </p>
+                    </div>
+
+                    {/* 콘텐츠 영역 - 추가 계정 목록 */}
+                    <div className="py-2 px-6 max-h-[60vh] overflow-y-auto">
+                        {currentUserEmail && additionalAccountsMap[currentUserEmail]?.length > 0 ? (
+                            <div className="space-y-3">
+                                {additionalAccountsMap[currentUserEmail].map((account) => (
+                                    <div key={account.id} className="border rounded-lg p-3 shadow-sm bg-white">
+                                        {/* 스토어 정보 */}
+                                        <div className="flex justify-between items-center mb-3 pb-2 border-b border-gray-200">
+                                            <div className="flex items-center gap-2">
+                                                        <Image src={account.storeLogo} alt={account.storeName} width={20} height={20} />
+                                                <span className="text-base font-semibold text-gray-900">{account.storeName}</span>
+
+                                                {/* 와우회원 표시 */}
+                                                {account.wowMember && account.storeName === "쿠팡" && (
+                                                    <div className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-blue-50 border border-blue-100">
+                                                        <Image src="/logos/coupang_rocket_wow.png" alt="와우 멤버십" width={50} height={15} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* 계정 정보 그리드 */}
+                                        <div className="grid grid-cols-2 gap-3 text-sm">
+                                            {/* 아이디 */}
+                                            <div className="flex items-start gap-2 bg-gray-100 rounded px-3 py-1">
+                                                <div className="flex items-center gap-1 text-gray-500 text-xs min-w-[40px]">
+                                                    <User className="w-3 h-3" />
+                                                    <span>아이디</span>
+                                                </div>
+                                                <p className="text-gray-800 font-medium text-xs">
+                                                    {account.userId}
+                                                </p>
+                                            </div>
+
+                                            {/* 이름 */}
+                                            <div className="flex items-start gap-2 bg-gray-100 rounded px-3 py-1">
+                                                <div className="flex items-center gap-1 text-gray-500 text-xs min-w-[40px]">
+                                                    <User className="w-3 h-3" />
+                                                    <span>이름</span>
+                                                </div>
+                                                <p className="text-gray-800 font-medium text-xs">
+                                                    {account.userName}
+                                                </p>
+                                            </div>
+
+                                            {/* 수취인 */}
+                                            <div className="flex items-start gap-2 bg-gray-100 rounded px-3 py-1">
+                                                <div className="flex items-center gap-1 text-gray-500 text-xs min-w-[40px]">
+                                                    <User className="w-3 h-3" />
+                                                    <span>수취인</span>
+                                                </div>
+                                                <p className="text-gray-800 font-medium text-xs">
+                                                    {account.recipient || account.receiver}
+                                                </p>
+                                            </div>
+
+                                            {/* 연락처 */}
+                                            <div className="flex items-start gap-2 bg-gray-100 rounded px-3 py-1">
+                                                <div className="flex items-center gap-1 text-gray-500 text-xs min-w-[40px]">
+                                                    <Phone className="w-3 h-3" />
+                                                    <span>연락처</span>
+                                                </div>
+                                                <p className="text-gray-800 font-medium text-xs">
+                                                    {account.phone || account.contact}
+                                                </p>
+                                            </div>
+
+                                            {/* 배송지 */}
+                                            <div className="flex items-start gap-2 bg-gray-100 rounded px-3 py-1 col-span-2">
+                                                <div className="flex items-center gap-1 text-gray-500 text-xs min-w-[40px]">
+                                                    <MapPin className="w-3 h-3" />
+                                                    <span>배송지</span>
+                                                </div>
+                                                <p className="text-gray-800 font-medium text-xs whitespace-pre-wrap break-words">
+                                                    {account.address}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                                <Users className="h-12 w-12 mb-2 text-gray-300" />
+                                <p>추가 계정이 없습니다</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 푸터 영역 */}
+                    <div className="flex items-center justify-end gap-3 px-6 py-3 bg-gray-50 border-t">
+                        <Button
+                            onClick={() => setIsAccountsModalOpen(false)}
+                            className="h-8 px-3 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            닫기
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
