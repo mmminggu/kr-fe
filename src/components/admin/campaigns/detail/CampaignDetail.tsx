@@ -6,6 +6,7 @@ import { Progress } from '@/src/components/ui/progress';
 import CampaignInfoCard from '@/src/components/admin/campaigns/detail/CampaignInfo';
 import ProofList from '@/src/components/admin/campaigns/detail/ProofList';
 import ReservationList from '@/src/components/admin/campaigns/detail/ReservationList';
+import CSManagement from '@/src/components/admin/campaigns/detail/CSManagement';
 import { OptionItem } from '@/src/components/admin/campaigns/detail/OptionTable';
 import { RecruitmentDay } from '@/src/components/admin/campaigns/detail/RecruitmentTable';
 import clsx from 'clsx';
@@ -52,6 +53,21 @@ interface ListCampaign {
     completedReviews: number;
     createdAt: string;
     isActive: boolean;
+}
+
+interface CSItem {
+    id: string;
+    userId: string;
+    userName: string;
+    requestType: 'refund' | 'exchange' | 'inquiry' | 'complaint' | 'other';
+    title: string;
+    content: string;
+    status: 'waiting' | 'inProgress' | 'completed' | 'rejected';
+    requestDate: string;
+    responseDate?: string;
+    response?: string;
+    adminId?: string;
+    adminName?: string;
 }
 
 import {
@@ -566,6 +582,9 @@ export default function CampaignDetailPage() {
                     <>
                         {/* 증빙 목록 */}
                         <ProofList />
+
+                        {/* CS 관리 */}
+                        <CSManagement />
 
                         {/* 예약자 리스트 */}
                         <ReservationList />

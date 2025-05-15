@@ -19,8 +19,8 @@ export default function InquiryDetail({ inquiry, onBack, onNewInquiry }: Inquiry
             case "pending":
                 return {
                     icon: <Clock className="h-4 w-4" />,
-                    text: "접수완료",
-                    color: "text-yellow-600 bg-yellow-50 border-yellow-200"
+                    text: "미답변",
+                    color: "text-red-600 bg-red-50 border-red-200"
                 };
             case "answered":
                 return {
@@ -81,12 +81,6 @@ export default function InquiryDetail({ inquiry, onBack, onNewInquiry }: Inquiry
                         </div>
 
                         <div className="flex justify-between items-center mt-2 ml-2">
-                            {/* ml-11을 추가하여 Q 아이콘과 정렬 */}
-                            {/*<div className="flex items-center mt-2 space-x-3 text-sm text-gray-500">
-                                <span>{inquiry.category}</span>
-                                <span>|</span>
-                                <span>{inquiry.campaign}</span>
-                            </div>*/}
                             <div className="flex flex-wrap gap-2">
                                 <div className="flex items-center text-xs bg-yellow-100 px-2 py-1 rounded-md">
                                     {/*<span className="text-gray-500 mr-1">카테고리:</span>*/}

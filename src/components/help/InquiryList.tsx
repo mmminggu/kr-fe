@@ -46,10 +46,10 @@ export default function InquiryList({ inquiries, onViewDetail }: InquiryListProp
         switch (status) {
             case "pending":
                 return {
-                    icon: <Clock className="h-5 w-5 text-yellow-500" />,
-                    text: "접수완료",
-                    textColor: "text-yellow-600",
-                    bgColor: "bg-yellow-50"
+                    icon: <Clock className="h-5 w-5 text-red-600" />,
+                    text: "미답변",
+                    textColor: "text-red-600",
+                    bgColor: "bg-red-50"
                 };
             case "answered":
                 return {

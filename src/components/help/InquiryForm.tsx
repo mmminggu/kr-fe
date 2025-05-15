@@ -214,7 +214,7 @@ export default function InquiryForm({ onSubmit }: InquiryFormProps) {
                             <PaperclipIcon className="mr-2 h-4 w-4" />
                             파일 첨부
                         </Button>
-                        <span className="text-xs sm:text-sm text-gray-500">최대 2개 / 5MB 이하</span>
+                        <span className="text-xs sm:text-sm text-gray-500">5MB 이하</span>
                     </div>
 
                     {/* 첨부된 파일 목록 UI 개선 */}

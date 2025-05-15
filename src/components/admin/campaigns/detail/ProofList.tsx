@@ -321,10 +321,10 @@ export default function ProofList() {
                                       <span
                                           className={clsx(
                                               'px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-full',
-                                              proof.status === '구매증빙' && 'bg-orange-100 text-orange-800',
+                                              proof.status === '구매증빙' && 'bg-blue-100 text-blue-800',
                                               proof.status === '리뷰증빙' && 'bg-green-100 text-green-800',
-                                              proof.status === '구매증빙 수정' && 'bg-orange-100 text-orange-800',
-                                              proof.status === '리뷰증빙 수정' && 'bg-green-100 text-green-800',
+                                              proof.status === '구매증빙 수정' && 'bg-red-100 text-red-800',
+                                              proof.status === '리뷰증빙 수정' && 'bg-red-100 text-red-800',
                                               proof.status === '완료' && 'bg-gray-200 text-gray-800'
                                           )}
                                       >

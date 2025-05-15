@@ -14,7 +14,7 @@ import {
     Download,
     X,
     CheckCircle,
-    MessageSquare,
+    ChevronDown,
     FileImage,
     FileText
 } from "lucide-react";
@@ -42,6 +42,7 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     const [attachments, setAttachments] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
 
     useEffect(() => {
         // 실제 구현 시 API 호출로 대체
@@ -66,10 +67,10 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                     answerDate: id % 2 === 0 ? null : new Date(2025, 4, 15, 16, 45),
                     adminName: id % 2 === 0 ? null : "고객센터",
                     images: [
-                        { url: "https://via.placeholder.com/800x600?text=Image1", name: "screenshot.jpg", size: 2621440 }
+                        { url: "/Placeholder2.svg", name: "screenshot.jpg", size: 2621440 }
                     ],
                     files: [
-                        { url: "/sample.pdf", name: "product_info.pdf", size: 524288 }
+                        { url: "/Placeholder2.svg", name: "product_info.pdf", size: 524288 }
                     ],
                 };
 
@@ -200,13 +201,6 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                     </Link>
                     <h1 className="text-2xl font-bold text-gray-800">문의 상세</h1>
                 </div>
-                <Badge
-                    className={`px-3 py-1 text-sm font-medium ${
-                        inquiry.answer ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}
-                >
-                    {inquiry.answer ? '답변완료' : '미답변'}
-                </Badge>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
@@ -215,45 +209,129 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                     <div className="p-6">
                         {/* 문의 헤더 - 질문 영역 */}
                         <div className="flex justify-between items-start mb-4">
+                            {/* 좌측: Q 아이콘 + 제목 + 배지 */}
                             <div className="flex items-start">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-medium">
                                     Q
                                 </div>
-                                <div className="ml-4">
-                                    <h2 className="text-xl font-bold text-gray-900">{inquiry.title}</h2>
-                                    <div className="flex flex-wrap gap-3 mt-2">
-                                        <div className="flex items-center text-sm text-gray-500">
-                                            <User size={14} className="mr-1" />
-                                            {inquiry.username}
-                                        </div>
-                                        <div className="flex items-center text-sm text-gray-500">
-                                            <Clock size={14} className="mr-1" />
-                                            {formatDateTime(inquiry.createdAt)}
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2 mt-3">
-                                        <Badge className="bg-yellow-100 text-yellow-800">
-                                            {inquiry.category}
-                                        </Badge>
-
+                                <div className="">
+                                    <h2 className="ml-4 text-xl font-medium text-gray-900">{inquiry.title}</h2>
+                                    <div className="mt-2 flex flex-wrap gap-2 -ml-1 ">
+                                        <Badge className="font-medium bg-yellow-100 text-yellow-800  rounded-md">{inquiry.category}</Badge>
                                         {inquiry.campaign && (
-                                            <Badge className="bg-green-100 text-green-800">
-                                                {inquiry.campaign.name}
-                                            </Badge>
+                                            <Badge className="font-medium bg-green-100 text-green-800  rounded-md">{inquiry.campaign.name}</Badge>
                                         )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 우측: 상태 뱃지 + 작성자 + 등록일 */}
+                            <div className="flex flex-col items-end text-sm text-gray-600">
+                                {/* 상태 뱃지: 최상단 강조 */}
+                                <Badge
+                                    className={`mb-2 inline-flex items-center px-3 py-1 text-sm font-medium ${
+                                        inquiry.answer ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
+                                    }`}
+                                >
+                                    {inquiry.answer ? (
+                                        <>
+                                            <CheckCircle className="w-4 h-4 mr-1" />
+                                            답변완료
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Clock className="w-4 h-4 mr-1" />
+                                            미답변
+                                        </>
+                                    )}
+                                </Badge>
+
+                                {/* 등록일자 + 사용자 */}
+                                <div className="flex items-center">
+                                    {/* 사용자 뱃지 */}
+                                    <div
+                                        className="inline-flex items-center px-3 py-1 mr-2 rounded-full bg-gray-100 border border-gray-200 cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-colors"
+                                        onClick={() => setIsUserProfileOpen(true)}
+                                    >
+                                        <User size={16} className="text-blue-500 mr-2" />
+                                        <span className="text-gray-800 font-medium">{inquiry.username}</span>
+                                        <ChevronDown size={14} className="text-gray-500 ml-1" />
+                                    </div>
+
+                                    {/* 등록일 */}
+                                    <div className="flex items-center text-gray-500">
+                                        <Clock size={14} className="mr-1" />
+                                        {formatDateTime(inquiry.createdAt)}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        {/* 사용자 정보 모달 */}
+                        <Dialog open={isUserProfileOpen} onOpenChange={setIsUserProfileOpen}>
+                            <DialogContent className="sm:max-w-[500px]">
+                                <DialogHeader>
+                                    <DialogTitle className="text-xl">사용자 정보</DialogTitle>
+                                </DialogHeader>
+
+                                <div className="py-4">
+                                    <div className="flex items-center mb-5">
+                                        <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold">
+                                            {inquiry.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="ml-4">
+                                            <h3 className="text-xl font-bold text-gray-900">{inquiry.username}</h3>
+                                            <p className="text-gray-500 text-sm">고객 ID: {inquiry.id}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-500">이메일</p>
+                                                <p className="mt-1 text-gray-900">{inquiry.email}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-500">전화번호</p>
+                                                <p className="mt-1 text-gray-900">{inquiry.phone}</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-500">최근 문의</p>
+                                            <div className="mt-1 p-3 bg-gray-100 rounded-md">
+                                                <p className="text-gray-900 font-medium">{inquiry.title}</p>
+                                                <p className="text-gray-500 text-sm mt-1">
+                                                    {formatDateTime(inquiry.createdAt)}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-3 border-t border-gray-200">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-medium text-gray-500">문의 내역</span>
+                                                <Link href={`/admin/customer-service/inquiries?username=${inquiry.username}`} className="text-sm text-indigo-600 hover:text-indigo-800">
+                                                    모든 문의 보기
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <DialogFooter>
+                                    <Button onClick={() => setIsUserProfileOpen(false)}>닫기</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+
                         {/* 문의 내용 */}
-                        <div className="mt-5 p-4 bg-gray-50 rounded-lg">
+                        <div className="mt-5 p-4 ml-6 bg-gray-100 rounded-lg">
                             <p className="whitespace-pre-line text-gray-700">{inquiry.content}</p>
                         </div>
 
                         {/* 첨부 파일 (이미지 + 문서) */}
                         {(inquiry.images && inquiry.images.length > 0) || (inquiry.files && inquiry.files.length > 0) ? (
-                            <div className="mt-6">
+                            <div className="mt-6 ml-6">
                                 <h3 className="text-sm font-medium text-gray-700 mb-3">첨부파일</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* 이미지 파일 */}
@@ -327,7 +405,7 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                             {/* 답변 헤더 */}
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-start">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 flex items-center justify-center text-white font-bold">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-sky-500 to-teal-400 flex items-center justify-center text-white font-medium">
                                         A
                                     </div>
                                     <div className="ml-4">
@@ -348,18 +426,18 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                             </div>
 
                             {/* 답변 내용 */}
-                            <div className="ml-14 p-4 bg-gray-50 rounded-lg">
+                            <div className="ml-14 p-4 bg-gray-100 rounded-lg">
                                 <p className="whitespace-pre-line text-gray-700">{inquiry.answer}</p>
                             </div>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmitAnswer}>
                             <div className="flex items-start mb-4">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 flex items-center justify-center text-white font-bold">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-sky-500 to-teal-400 flex items-center justify-center text-white font-medium">
                                     A
                                 </div>
-                                <div className="ml-4 flex-1">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-3">답변 작성</h3>
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-medium text-gray-900 mb-3 ml-4">답변 작성</h3>
 
                                     {/* 답변 입력 영역 */}
                                     <div className="mb-4">
@@ -371,9 +449,6 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                                             onChange={(e) => setAnswer(e.target.value)}
                                             required
                                         ></textarea>
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            줄바꿈은 그대로 유지됩니다. 문단을 구분하려면 빈 줄을 추가하세요.
-                                        </p>
                                     </div>
 
                                     {/* 첨부파일 영역 */}
@@ -397,7 +472,7 @@ export default function InquiryDetail({ id }: InquiryDetailProps) {
                                                 multiple
                                             />
                                             <span className="text-xs text-gray-500">
-                                                최대 2개 / 5MB 이하
+                                                5MB 이하
                                             </span>
                                         </div>
 
